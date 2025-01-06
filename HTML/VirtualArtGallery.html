@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Virtual Art Gallery</title>
+    <style>
+        /* General Styles */
+        body {
+            margin: 0;
+            overflow: hidden;
+            font-family: Arial, sans-serif;
+        }
+        canvas {
+            display: block;
+            width: 100vw;
+            height: 100vh;
+        }
+        #info {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 14px;
+            z-index: 1;
+        }
+        #tooltip {
+            position: absolute;
+            display: none;
+            background: white;
+            color: black;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div id="info">
+        <p><strong>Virtual Art Gallery</strong></p>
+        <p>WASD or Arrow Keys: Move</p>
+        <p>Mouse: Look Around</p>
+        <p>Click: Interact with Artwork</p>
+    </div>
+    <div id="tooltip"></div>
+    <canvas id="galleryCanvas"></canvas>
+
+    <script type="module">
+        import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.155.0/build/three.module.js";
+        import { OrbitControls } from "https://cdn.jsdelivr.net/npm/three@0.155.0/examples/jsm/controls/OrbitControls.js";
+
+        // Sample Data: Randomly Generated Artworks and Artist Bios
+        const artworks = [
+            {
+                title: "Colorful Dream",
+                artist: "Alexandra Rivera",
+                bio: "A digital artist exploring vivid colors and abstract forms.",
+                texture: "https://source.unsplash.com/random/400x400?art1"
+            },
+            {
+                title: "Urban Symphony",
+                artist: "Mason Carter",
+                bio: "A photographer capturing the rhythm of urban life.",
+                texture: "https://source.unsplash.com/random/400x400?art2"
+            },
+            {
+                title: "Nature's Touch",
+                artist: "Sophia Novak",
+                bio: "An artist blending nature and digital surrealism.",
+                texture: "https://source.unsplash.com/random/400x400?art3"
+            }
+        ];
+
+        // Three.js Setup
+        const canvas = document.getElementById("galleryCanvas");
+        const renderer = new THREE.WebGLRenderer({ canvas });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+
+        const scene = new THREE.Scene();
+        scene.background = new THREE.Color(0x202020);
+
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        camera.position.set(0, 2, 5);
+
+        const controls = new OrbitControls(camera, renderer.domElement);
+        controls.enableDamping = true;
+
+        // Lighting
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+        scene.add(ambientLight);
+
+        const directionalLight = new THREE.DirectionalLight(0xffffff, 0.6);
+        directionalLight.position.set(10, 10, 10);
+        scene.add(directionalLight);
+
+        // Ground Plane
+        const groundGeometry = new THREE.PlaneGeometry(50, 50);
+        const groundMaterial = new THREE.MeshPhongMaterial({ color: 0x808080 });
+        const ground = new THREE.Mesh(groundGeometry, groundMaterial);
+        ground.rotation.x = -Math.PI / 2;
+        scene.add(ground);
+
+        // Gallery Walls
+        const wallMaterial = new THREE.MeshPhongMaterial({ color: 0x404040 });
+        const wallPositions = [
+            { x: 0, y: 2.5, z: -10 },
+            { x: 0, y: 2.5, z: 10 },
+            { x: -10, y: 2.5, z: 0, rotationY: Math.PI / 2 },
+            { x: 10, y: 2.5, z: 0, rotationY: Math.PI / 2 }
+        ];
+
+        wallPositions.forEach(pos => {
+            const wallGeometry = new THREE.BoxGeometry(20, 5, 0.5);
+            const wall = new THREE.Mesh(wallGeometry, wallMaterial);
+            wall.position.set(pos.x, pos.y, pos.z);
+            if (pos.rotationY) wall.rotation.y = pos.rotationY;
+            scene.add(wall);
+        });
+
+        // Artworks
+        const loader = new THREE.TextureLoader();
+        artworks.forEach((artwork, index) => {
+            const artGeometry = new THREE.PlaneGeometry(3, 3);
+            const artMaterial = new THREE.MeshBasicMaterial({
+                map: loader.load(artwork.texture),
+                side: THREE.DoubleSide
+            });
+            const artMesh = new THREE.Mesh(artGeometry, artMaterial);
+            artMesh.position.set(index * 5 - 5, 2.5, -9.8);
+            artMesh.userData = artwork;
+            scene.add(artMesh);
+        });
+
+        // Tooltip
+        const tooltip = document.getElementById("tooltip");
+        window.addEventListener("mousemove", (event) => {
+            const mouse = new THREE.Vector2(
+                (event.clientX / window.innerWidth) * 2 - 1,
+                -(event.clientY / window.innerHeight) * 2 + 1
+            );
+
+            const raycaster = new THREE.Raycaster();
+            raycaster.setFromCamera(mouse, camera);
+            const intersects = raycaster.intersectObjects(scene.children);
+
+            if (intersects.length > 0 && intersects[0].object.userData) {
+                const { title, artist } = intersects[0].object.userData;
+                tooltip.style.display = "block";
+                tooltip.style.left = `${event.clientX + 10}px`;
+                tooltip.style.top = `${event.clientY + 10}px`;
+                tooltip.innerHTML = `<strong>${title}</strong><br>${artist}`;
+            } else {
+                tooltip.style.display = "none";
+            }
+        });
+
+        // Render Loop
+        function animate() {
+            controls.update();
+            renderer.render(scene, camera);
+            requestAnimationFrame(animate);
+        }
+
+        animate();
+    </script>
+</body>
+</html>

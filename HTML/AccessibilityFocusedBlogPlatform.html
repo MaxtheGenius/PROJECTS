@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Accessible Blog Platform</title>
+    <style>
+        /* Basic Styles */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        header, main, footer {
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        header {
+            background: #007bff;
+            color: #fff;
+            text-align: center;
+        }
+        nav {
+            margin: 10px 0;
+            text-align: center;
+        }
+        nav a {
+            margin: 0 10px;
+            color: #fff;
+            text-decoration: none;
+        }
+        nav a:focus {
+            outline: 3px solid yellow;
+        }
+        .blog-post {
+            border-bottom: 1px solid #ccc;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+        .blog-post:last-of-type {
+            border-bottom: none;
+        }
+        .contrast-toggle, .tts-toggle {
+            margin: 10px 0;
+            padding: 10px;
+            background: #007bff;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+        .contrast-toggle:hover, .tts-toggle:hover {
+            background: #0056b3;
+        }
+        .high-contrast {
+            background-color: #000;
+            color: #fff;
+        }
+        footer {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header Section -->
+    <header>
+        <h1>Accessible Blog Platform</h1>
+        <p>Prioritizing accessibility for all users</p>
+        <nav aria-label="Main navigation">
+            <a href="#content">Skip to Content</a>
+            <a href="#footer">Skip to Footer</a>
+        </nav>
+    </header>
+
+    <!-- Main Content Section -->
+    <main id="content" tabindex="0">
+        <button class="contrast-toggle" onclick="toggleContrast()">Toggle High Contrast</button>
+        <button class="tts-toggle" onclick="toggleTTS()">Enable/Disable Text-to-Speech</button>
+
+        <!-- Blog Post 1 -->
+        <article class="blog-post" tabindex="0">
+            <header>
+                <h2>Exploring the Wonders of Space</h2>
+                <p><time datetime="2025-01-04">January 4, 2025</time> | By <b>John Doe</b></p>
+            </header>
+            <p>
+                Space exploration has always fascinated humanity. From landing on the Moon to sending probes to Mars,
+                the possibilities are endless. This blog post dives into recent advancements in space technology and
+                future missions to explore the cosmos.
+            </p>
+        </article>
+
+        <!-- Blog Post 2 -->
+        <article class="blog-post" tabindex="0">
+            <header>
+                <h2>Top 10 Healthy Recipes for 2025</h2>
+                <p><time datetime="2025-01-03">January 3, 2025</time> | By <b>Jane Smith</b></p>
+            </header>
+            <p>
+                Start the new year with a healthier lifestyle! Discover our top 10 healthy recipes, including plant-based dishes,
+                quick meal preps, and desserts you won't believe are good for you.
+            </p>
+        </article>
+
+        <!-- Blog Post 3 -->
+        <article class="blog-post" tabindex="0">
+            <header>
+                <h2>Mastering Personal Finance</h2>
+                <p><time datetime="2025-01-02">January 2, 2025</time> | By <b>Alex Lee</b></p>
+            </header>
+            <p>
+                Want to take control of your finances? This guide covers everything from budgeting basics to
+                advanced investment strategies to help you achieve financial freedom.
+            </p>
+        </article>
+    </main>
+
+    <!-- Footer Section -->
+    <footer id="footer">
+        <p>&copy; 2025 Accessible Blog Platform | Designed with Accessibility in Mind</p>
+    </footer>
+
+    <script>
+        // High Contrast Mode
+        function toggleContrast() {
+            document.body.classList.toggle('high-contrast');
+        }
+
+        // Text-to-Speech Toggle
+        let ttsEnabled = false;
+        const synth = window.speechSynthesis;
+
+        function toggleTTS() {
+            ttsEnabled = !ttsEnabled;
+            if (ttsEnabled) {
+                enableTTS();
+            } else {
+                stopTTS();
+            }
+        }
+
+        function enableTTS() {
+            const posts = document.querySelectorAll('.blog-post');
+            posts.forEach((post) => {
+                post.addEventListener('focus', handleFocusTTS);
+            });
+        }
+
+        function stopTTS() {
+            synth.cancel();
+            const posts = document.querySelectorAll('.blog-post');
+            posts.forEach((post) => {
+                post.removeEventListener('focus', handleFocusTTS);
+            });
+        }
+
+        function handleFocusTTS(event) {
+            const content = event.target.innerText;
+            const utterance = new SpeechSynthesisUtterance(content);
+            synth.cancel(); // Stop any ongoing speech
+            synth.speak(utterance);
+        }
+    </script>
+</body>
+</html>

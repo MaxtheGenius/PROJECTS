@@ -1,0 +1,11 @@
+[package]
+name = "hft_system"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+rand = "0.8"        # Random data generation
+tokio = { version = "1", features = ["full"] } # Asynchronous runtime
+crossbeam = "0.8"   # High-performance concurrent data structures
+serde = { version = "1.0", features = ["derive"] } # Serialization
+chrono = "0.4"      # Timestamps for latency tracking

@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Augmented Reality Product Catalog</title>
+    <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/jeromeetienne/AR.js/aframe/build/aframe-ar.js"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        .container {
+            padding: 20px;
+        }
+
+        #ar-button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        #ar-button:hover {
+            background-color: #0056b3;
+        }
+
+        #product-list {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .product-card {
+            width: 200px;
+            margin: 15px;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .product-card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .product-card h3 {
+            font-size: 18px;
+            margin: 10px 0;
+        }
+
+        .product-card p {
+            font-size: 14px;
+            color: #777;
+        }
+
+        .product-card button {
+            padding: 10px 20px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .product-card button:hover {
+            background-color: #218838;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Augmented Reality Product Catalog</h1>
+    </header>
+
+    <div class="container">
+        <button id="ar-button" onclick="startAR()">Start AR View</button>
+        <div id="product-list">
+            <!-- Product cards will be generated here -->
+        </div>
+
+        <!-- AR Scene -->
+        <a-scene embedded arjs>
+            <a-marker preset="hiro">
+                <a-box position="0 0.5 0" rotation="0 45 0" color="#4CC3D9" scale="0.5 0.5 0.5"></a-box>
+                <a-text value="Sample Product" position="0 1 0" scale="2 2 2" color="#ffffff"></a-text>
+            </a-marker>
+            <a-entity camera></a-entity>
+        </a-scene>
+    </div>
+
+    <script>
+        // Randomly generated products
+        const products = generateRandomProducts(5); // Generate 5 random products
+        const productListElement = document.getElementById("product-list");
+
+        // Function to generate random products
+        function generateRandomProducts(count) {
+            const productNames = ["Smartphone", "Laptop", "Headphones", "Smartwatch", "Camera"];
+            const productPrices = ["$499", "$999", "$199", "$299", "$899"];
+            const productDescriptions = [
+                "A powerful smartphone with a sleek design.",
+                "A laptop that’s perfect for work and play.",
+                "High-quality sound for your music and calls.",
+                "Track your fitness and stay connected.",
+                "Capture stunning photos with the latest camera."
+            ];
+            const productImages = [
+                "https://via.placeholder.com/200x200.png?text=Smartphone",
+                "https://via.placeholder.com/200x200.png?text=Laptop",
+                "https://via.placeholder.com/200x200.png?text=Headphones",
+                "https://via.placeholder.com/200x200.png?text=Smartwatch",
+                "https://via.placeholder.com/200x200.png?text=Camera"
+            ];
+
+            let products = [];
+            for (let i = 0; i < count; i++) {
+                const randomIndex = Math.floor(Math.random() * productNames.length);
+                products.push({
+                    name: productNames[randomIndex],
+                    price: productPrices[randomIndex],
+                    description: productDescriptions[randomIndex],
+                    image: productImages[randomIndex],
+                    model: `https://example.com/models/${productNames[randomIndex].toLowerCase()}.gltf`
+                });
+            }
+            return products;
+        }
+
+        // Function to create product cards and display them
+        function displayProducts(products) {
+            products.forEach(product => {
+                const productCard = document.createElement("div");
+                productCard.classList.add("product-card");
+
+                productCard.innerHTML = `
+                    <img src="${product.image}" alt="${product.name}">
+                    <h3>${product.name}</h3>
+                    <p>${product.description}</p>
+                    <p>${product.price}</p>
+                    <button onclick="viewInAR('${product.model}')">View in AR</button>
+                `;
+
+                productListElement.appendChild(productCard);
+            });
+        }
+
+        // Function to start AR
+        function startAR() {
+            const arScene = document.querySelector("a-scene");
+            if (!arScene.hasAttribute("arjs")) {
+                arScene.setAttribute("arjs", "trackingMethod: best; sourceType: webcam;");
+            }
+            arScene.style.display = "block";
+            alert("Start scanning the product marker to view in AR!");
+        }
+
+        // Function to view product in AR
+        function viewInAR(modelUrl) {
+            const marker = document.querySelector("a-marker");
+            const model = document.createElement("a-entity");
+            model.setAttribute("gltf-model", modelUrl);
+            model.setAttribute("scale", "0.5 0.5 0.5");
+            model.setAttribute("position", "0 0 0");
+            marker.appendChild(model);
+
+            alert("Viewing product in AR!");
+        }
+
+        // Display the randomly generated products
+        displayProducts(products);
+    </script>
+
+</body>
+</html>

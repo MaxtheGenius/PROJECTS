@@ -1,0 +1,14 @@
+[package]
+name = "image_processor"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+wasm-bindgen = "0.2" # WebAssembly bindings
+image = "0.24"       # Image processing library
+
+[lib]
+crate-type = ["cdylib"]
+
+[profile.release]
+opt-level = "z"      # Optimize for minimal size

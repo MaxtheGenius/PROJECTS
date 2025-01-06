@@ -1,0 +1,11 @@
+[package]
+name = "web_scraper"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+tokio = { version = "1", features = ["full"] }      # Asynchronous runtime
+reqwest = { version = "0.11", features = ["json"] } # HTTP client
+futures = "0.3"                                    # Concurrency utilities
+rand = "0.8"                                       # Random data generation
+serde = { version = "1.0", features = ["derive"] } # JSON serialization/deserialization

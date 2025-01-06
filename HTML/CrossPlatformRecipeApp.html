@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recipe App</title>
+    <style>
+        /* General Styles */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #fafafa;
+            color: #333;
+        }
+        header, main, footer {
+            max-width: 800px;
+            margin: auto;
+            padding: 20px;
+        }
+        header {
+            background: #ff5722;
+            color: #fff;
+            text-align: center;
+        }
+        header h1 {
+            margin: 0;
+        }
+        .recipe-list {
+            list-style: none;
+            padding: 0;
+        }
+        .recipe-item {
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            padding: 10px;
+            background: #fff;
+        }
+        .recipe-item h3 {
+            margin-top: 0;
+        }
+        .recipe-details {
+            display: none;
+            margin-top: 10px;
+        }
+        .btn {
+            display: inline-block;
+            padding: 8px 12px;
+            margin-top: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            color: #fff;
+            background: #007bff;
+        }
+        .btn:hover {
+            background: #0056b3;
+        }
+        footer {
+            text-align: center;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header Section -->
+    <header>
+        <h1>Recipe App</h1>
+        <p>Discover and cook with ease!</p>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+        <section id="recipes">
+            <h2>Recipes</h2>
+            <ul class="recipe-list" id="recipe-list">
+                <!-- Recipes will be dynamically populated -->
+            </ul>
+        </section>
+
+        <section id="tools">
+            <h2>Cooking Tools</h2>
+
+            <!-- Measurement Converter -->
+            <div id="measurement-converter">
+                <h3>Measurement Converter</h3>
+                <input type="number" id="value-input" placeholder="Enter value">
+                <select id="unit-from">
+                    <option value="cups">Cups</option>
+                    <option value="grams">Grams</option>
+                    <option value="liters">Liters</option>
+                </select>
+                to
+                <select id="unit-to">
+                    <option value="cups">Cups</option>
+                    <option value="grams">Grams</option>
+                    <option value="liters">Liters</option>
+                </select>
+                <button class="btn" onclick="convertMeasurement()">Convert</button>
+                <p id="conversion-result"></p>
+            </div>
+
+            <!-- Cooking Timer -->
+            <div id="cooking-timer">
+                <h3>Cooking Timer</h3>
+                <input type="number" id="timer-minutes" placeholder="Minutes">
+                <button class="btn" onclick="startTimer()">Start Timer</button>
+                <p id="timer-display"></p>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer Section -->
+    <footer>
+        <p>&copy; 2025 Recipe App | Cook with love!</p>
+    </footer>
+
+    <script>
+        // Sample Recipe Data (Randomly Generated)
+        const recipes = [
+            {
+                title: "Spaghetti Bolognese",
+                ingredients: ["200g spaghetti", "100g ground beef", "1 cup tomato sauce", "1 onion", "2 garlic cloves"],
+                instructions: ["Cook spaghetti according to package instructions.", "Brown beef in a pan.", "Add onion and garlic, cook until soft.", "Stir in tomato sauce and simmer for 15 minutes."]
+            },
+            {
+                title: "Chocolate Chip Cookies",
+                ingredients: ["2 cups flour", "1 cup sugar", "1 cup butter", "1 cup chocolate chips", "1 egg"],
+                instructions: ["Preheat oven to 180°C.", "Mix all ingredients in a bowl.", "Scoop dough onto a baking tray.", "Bake for 10-12 minutes."]
+            },
+            {
+                title: "Chicken Curry",
+                ingredients: ["200g chicken", "1 cup coconut milk", "2 tbsp curry paste", "1 onion", "1 potato"],
+                instructions: ["Brown chicken in a pan.", "Add onion and potato, cook until soft.", "Stir in curry paste and coconut milk.", "Simmer for 20 minutes."]
+            }
+        ];
+
+        // Populate Recipes
+        const recipeList = document.getElementById('recipe-list');
+        recipes.forEach((recipe, index) => {
+            const listItem = document.createElement('li');
+            listItem.classList.add('recipe-item');
+            listItem.innerHTML = `
+                <h3>${recipe.title}</h3>
+                <button class="btn" onclick="toggleDetails(${index})">View Details</button>
+                <div class="recipe-details" id="details-${index}">
+                    <h4>Ingredients:</h4>
+                    <ul>${recipe.ingredients.map(ing => `<li>${ing}</li>`).join('')}</ul>
+                    <h4>Instructions:</h4>
+                    <ol>${recipe.instructions.map(step => `<li>${step}</li>`).join('')}</ol>
+                </div>
+            `;
+            recipeList.appendChild(listItem);
+        });
+
+        function toggleDetails(index) {
+            const details = document.getElementById(`details-${index}`);
+            details.style.display = details.style.display === 'block' ? 'none' : 'block';
+        }
+
+        // Measurement Converter
+        function convertMeasurement() {
+            const value = parseFloat(document.getElementById('value-input').value);
+            const fromUnit = document.getElementById('unit-from').value;
+            const toUnit = document.getElementById('unit-to').value;
+            let result = value; // Placeholder conversion logic
+
+            if (fromUnit === "cups" && toUnit === "grams") {
+                result = value * 240; // Approximate for water
+            } else if (fromUnit === "grams" && toUnit === "cups") {
+                result = value / 240;
+            } else if (fromUnit === "liters" && toUnit === "cups") {
+                result = value * 4.22675;
+            }
+
+            document.getElementById('conversion-result').innerText = `${value} ${fromUnit} = ${result.toFixed(2)} ${toUnit}`;
+        }
+
+        // Cooking Timer
+        function startTimer() {
+            let minutes = parseInt(document.getElementById('timer-minutes').value) || 0;
+            const display = document.getElementById('timer-display');
+
+            function updateTimer() {
+                if (minutes > 0) {
+                    display.innerText = `Time Remaining: ${minutes} minute(s)`;
+                    minutes--;
+                    setTimeout(updateTimer, 60000);
+                } else {
+                    display.innerText = "Time's up!";
+                }
+            }
+            updateTimer();
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,22 @@
+{
+    "build": {
+      "beforeDevCommand": "",
+      "beforeBuildCommand": "",
+      "devPath": "../dist",
+      "distDir": "../dist"
+    },
+    "package": {
+      "productName": "Productivity Tool",
+      "version": "0.1.0"
+    },
+    "tauri": {
+      "windows": [
+        {
+          "title": "Productivity Tool",
+          "width": 800,
+          "height": 600,
+          "resizable": true
+        }
+      ]
+    }
+  }  

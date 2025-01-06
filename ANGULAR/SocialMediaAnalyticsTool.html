@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Social Media Analytics Tool</title>
+  <script src="https://cdn.jsdelivr.net/npm/@angular/core@latest/bundles/core.umd.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@angular/common@latest/bundles/common.umd.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@angular/compiler@latest/bundles/compiler.umd.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@angular/platform-browser@latest/bundles/platform-browser.umd.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@angular/platform-browser-dynamic@latest/bundles/platform-browser-dynamic.umd.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@angular/forms@latest/bundles/forms.umd.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@angular/router@latest/bundles/router.umd.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/zone.js@latest/dist/zone.js"></script>
+  <script>
+    (function(app) {
+      // Main Module
+      app.AppModule = ng.core.NgModule({
+        imports: [
+          ng.platformBrowser.BrowserModule,
+          ng.forms.FormsModule,
+          ng.router.RouterModule.forRoot([
+            { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
+            { path: 'dashboard', component: app.DashboardComponent },
+            { path: 'reports', component: app.ReportsComponent }
+          ])
+        ],
+        declarations: [
+          app.AppComponent,
+          app.DashboardComponent,
+          app.ReportsComponent
+        ],
+        bootstrap: [app.AppComponent]
+      }).Class({
+        constructor: function() {}
+      });
+
+      // App Component
+      app.AppComponent = ng.core.Component({
+        selector: 'app-root',
+        template: `
+          <nav>
+            <a routerLink="/dashboard">Dashboard</a> |
+            <a routerLink="/reports">Reports</a>
+          </nav>
+          <router-outlet></router-outlet>
+        `
+      }).Class({
+        constructor: function() {}
+      });
+
+      // Dashboard Component
+      app.DashboardComponent = ng.core.Component({
+        selector: 'app-dashboard',
+        template: `
+          <div>
+            <h2>Social Media Dashboard</h2>
+            <div *ngFor="let metric of metrics">
+              <h3>{{ metric.platform }}</h3>
+              <p>Followers: {{ metric.followers }}</p>
+              <p>Engagement Rate: {{ metric.engagementRate }}%</p>
+              <p>Sentiment: {{ metric.sentiment }}</p>
+            </div>
+          </div>
+        `
+      }).Class({
+        constructor: function() {
+          this.metrics = [
+            {
+              platform: 'Twitter',
+              followers: Math.floor(Math.random() * 10000),
+              engagementRate: (Math.random() * 10).toFixed(2),
+              sentiment: ['Positive', 'Neutral', 'Negative'][Math.floor(Math.random() * 3)],
+            },
+            {
+              platform: 'Facebook',
+              followers: Math.floor(Math.random() * 5000),
+              engagementRate: (Math.random() * 15).toFixed(2),
+              sentiment: ['Positive', 'Neutral', 'Negative'][Math.floor(Math.random() * 3)],
+            },
+            {
+              platform: 'Instagram',
+              followers: Math.floor(Math.random() * 8000),
+              engagementRate: (Math.random() * 20).toFixed(2),
+              sentiment: ['Positive', 'Neutral', 'Negative'][Math.floor(Math.random() * 3)],
+            }
+          ];
+        }
+      });
+
+      // Reports Component
+      app.ReportsComponent = ng.core.Component({
+        selector: 'app-reports',
+        template: `
+          <div>
+            <h2>Reports</h2>
+            <button (click)="generateReport()">Generate Report</button>
+            <div *ngIf="report">
+              <h3>Report Summary</h3>
+              <p>{{ report }}</p>
+            </div>
+          </div>
+        `
+      }).Class({
+        constructor: function() {
+          this.report = '';
+        },
+        generateReport: function() {
+          this.report = 'Report generated on: ' + new Date().toLocaleString() + ' with random social media insights.';
+        }
+      });
+
+      document.addEventListener('DOMContentLoaded', function() {
+        ng.platformBrowserDynamic.platformBrowserDynamic()
+          .bootstrapModule(app.AppModule);
+      });
+    })(window.app || (window.app = {}));
+  </script>
+</head>
+<body>
+  <app-root>Loading...</app-root>
+</body>
+</html>

@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Email Template Builder</title>
+    <style>
+        /* Global Styles */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 24px;
+            margin-top: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .template-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+            gap: 20px;
+        }
+
+        /* Styles for draggable items */
+        .draggable-item {
+            width: 200px;
+            height: 100px;
+            background-color: #4CAF50;
+            color: white;
+            text-align: center;
+            line-height: 100px;
+            border-radius: 8px;
+            cursor: pointer;
+            user-select: none;
+            margin-bottom: 10px;
+        }
+
+        .template {
+            width: 100%;
+            border: 1px dashed #ddd;
+            padding: 20px;
+            min-height: 200px;
+            border-radius: 8px;
+            background-color: #f4f4f4;
+            overflow: hidden;
+        }
+
+        .drag-over {
+            background-color: #dcdcdc;
+        }
+
+        /* Inline CSS for email layout */
+        .email-template {
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            font-family: Arial, sans-serif;
+            color: #333;
+        }
+
+        .email-header {
+            background-color: #4CAF50;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .email-body {
+            padding: 20px;
+        }
+
+        .email-footer {
+            background-color: #f4f4f4;
+            padding: 10px;
+            text-align: center;
+            font-size: 12px;
+            color: #777;
+        }
+
+        .content-block {
+            margin-bottom: 20px;
+        }
+
+        /* Responsive Design for Email */
+        @media only screen and (max-width: 600px) {
+            .email-template {
+                width: 100% !important;
+            }
+        }
+
+    </style>
+</head>
+<body>
+
+    <h1>Email Template Builder</h1>
+    <div class="container">
+        <div class="template-container">
+            <div class="draggable-item" draggable="true" id="header-item">Header</div>
+            <div class="draggable-item" draggable="true" id="body-item">Body</div>
+            <div class="draggable-item" draggable="true" id="footer-item">Footer</div>
+        </div>
+
+        <div class="template" id="emailTemplate" ondrop="drop(event)" ondragover="allowDrop(event)">
+            <h2>Drag Items Here</h2>
+        </div>
+
+        <button onclick="generatePreview()">Generate Preview</button>
+
+        <h2>Email Preview</h2>
+        <div id="emailPreview"></div>
+    </div>
+
+    <script>
+        // Allow the item to be dropped
+        function allowDrop(event) {
+            event.preventDefault();
+            event.target.classList.add('drag-over');
+        }
+
+        // Remove the "drag-over" class when item is dropped
+        function drop(event) {
+            event.preventDefault();
+            event.target.classList.remove('drag-over');
+            const draggedItem = document.querySelector('.dragging');
+            event.target.appendChild(draggedItem);
+        }
+
+        // Drag functionality
+        const draggableItems = document.querySelectorAll('.draggable-item');
+
+        draggableItems.forEach(item => {
+            item.addEventListener('dragstart', (event) => {
+                event.target.classList.add('dragging');
+            });
+
+            item.addEventListener('dragend', (event) => {
+                event.target.classList.remove('dragging');
+            });
+        });
+
+        // Generate Random Content for the Email Template
+        function generateRandomContent() {
+            const headers = ["Welcome to Our Service", "Your Monthly Newsletter", "Exclusive Offer Just for You"];
+            const bodies = [
+                "Hello, thank you for being a loyal customer! We appreciate your business and look forward to serving you.",
+                "Our team has been working hard to bring you exciting new features and updates. Here's what's new!",
+                "We've got an exclusive offer for you! Get 20% off your next purchase using the code SAVE20."
+            ];
+            const footers = ["Best regards, The Team", "Thank you for your time!", "Stay connected with us!"];
+
+            return {
+                header: headers[Math.floor(Math.random() * headers.length)],
+                body: bodies[Math.floor(Math.random() * bodies.length)],
+                footer: footers[Math.floor(Math.random() * footers.length)]
+            };
+        }
+
+        // Generate Preview Email with Random Content
+        function generatePreview() {
+            const content = generateRandomContent();
+            const emailTemplate = `
+                <div class="email-template">
+                    <div class="email-header">
+                        <h2>${content.header}</h2>
+                    </div>
+                    <div class="email-body">
+                        <p>${content.body}</p>
+                    </div>
+                    <div class="email-footer">
+                        <p>${content.footer}</p>
+                    </div>
+                </div>
+            `;
+            document.getElementById('emailPreview').innerHTML = emailTemplate;
+        }
+    </script>
+</body>
+</html>

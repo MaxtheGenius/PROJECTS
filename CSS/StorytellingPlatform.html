@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Story Builder</title>
+    <style>
+        /* General Styles */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+            background-color: #f4f4f4;
+        }
+
+        h1 {
+            text-align: center;
+            padding: 20px;
+            color: #333;
+        }
+
+        .story-container {
+            width: 100%;
+            height: 100vh;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .story-content {
+            position: relative;
+            width: 100%;
+            padding: 20px;
+            font-size: 20px;
+            color: #333;
+        }
+
+        /* Parallax Scrolling */
+        .parallax {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('https://via.placeholder.com/1920x1080') no-repeat center center fixed;
+            background-size: cover;
+            z-index: -1;
+            transform: translateZ(0);
+        }
+
+        /* Reveal Effects */
+        .reveal {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 1s ease-out, transform 1s ease-out;
+        }
+
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Dynamic Text Styling */
+        .dynamic-text {
+            font-weight: bold;
+            color: #e91e63;
+            animation: fadeIn 3s ease-out;
+        }
+
+        /* Text Fade Animation */
+        @keyframes fadeIn {
+            0% {
+                opacity: 0;
+            }
+            100% {
+                opacity: 1;
+            }
+        }
+
+        /* Button Styles */
+        .controls {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        .controls:hover {
+            background-color: #45a049;
+        }
+
+        /* Scroll Effects */
+        .story-section {
+            padding: 100px 20px;
+            text-align: center;
+            font-size: 24px;
+        }
+
+        .story-section:nth-child(even) {
+            background-color: #e0e0e0;
+        }
+
+        .story-section:nth-child(odd) {
+            background-color: #ffffff;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Interactive Story Builder</h1>
+
+    <div class="story-container">
+        <div class="parallax"></div>
+
+        <!-- Controls for testing -->
+        <button class="controls" onclick="toggleStory()">Start Story</button>
+
+        <div class="story-content">
+            <div class="story-section reveal" id="section1">
+                <p>This is a story starting...</p>
+            </div>
+            <div class="story-section reveal" id="section2">
+                <p class="dynamic-text">A magical forest appears before you!</p>
+            </div>
+            <div class="story-section reveal" id="section3">
+                <p>Do you venture deeper or turn back?</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Reveal effect based on scroll position
+        const revealElements = document.querySelectorAll('.reveal');
+
+        window.addEventListener('scroll', () => {
+            revealElements.forEach(element => {
+                const elementTop = element.getBoundingClientRect().top;
+                if (elementTop < window.innerHeight * 0.8) {
+                    element.classList.add('visible');
+                }
+            });
+        });
+
+        // Toggle between sections with transitions
+        function toggleStory() {
+            document.getElementById("section1").classList.add("visible");
+            document.getElementById("section2").classList.add("visible");
+            document.getElementById("section3").classList.add("visible");
+        }
+
+        // Randomly generate story snippets
+        const storySnippets = [
+            "A hidden treasure chest lies buried beneath the ancient oak tree.",
+            "The sun sets, casting a golden glow over the ocean horizon.",
+            "You hear footsteps behind you... someone is following you.",
+            "A dragon's roar echoes in the distance, sending shivers down your spine."
+        ];
+
+        const randomStoryText = () => {
+            const randomIndex = Math.floor(Math.random() * storySnippets.length);
+            return storySnippets[randomIndex];
+        };
+
+        // Dynamically update one of the sections with random content
+        document.getElementById("section2").querySelector("p").textContent = randomStoryText();
+    </script>
+
+</body>
+</html>

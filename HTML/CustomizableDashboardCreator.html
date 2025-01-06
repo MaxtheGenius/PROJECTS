@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Personalized Dashboard Tool</title>
+    <style>
+        /* Basic styles for the page layout */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        #toolbar {
+            display: flex;
+            justify-content: center;
+            padding: 10px;
+            background-color: #333;
+            color: white;
+        }
+
+        #toolbar button {
+            margin: 0 10px;
+            padding: 10px;
+            background-color: #007bff;
+            border: none;
+            color: white;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        #toolbar button:hover {
+            background-color: #0056b3;
+        }
+
+        #dashboard {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+            padding: 20px;
+        }
+
+        .widget {
+            width: 300px;
+            height: 200px;
+            margin: 10px;
+            background-color: white;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 15px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            position: relative;
+            cursor: move;
+        }
+
+        .widget h3 {
+            margin: 0;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .widget .data {
+            margin-top: 15px;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .drag-over {
+            border: 2px dashed #007bff;
+        }
+
+        /* Drag-and-drop container */
+        #widgets-container {
+            display: flex;
+            justify-content: space-around;
+            padding: 20px;
+        }
+
+        .available-widget {
+            width: 250px;
+            height: 150px;
+            margin: 10px;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            text-align: center;
+            padding: 20px;
+            cursor: pointer;
+        }
+
+        .available-widget:hover {
+            background-color: #f8f9fa;
+        }
+    </style>
+</head>
+<body>
+    <div id="toolbar">
+        <button onclick="addRandomWidget('Sales')">Add Sales Widget</button>
+        <button onclick="addRandomWidget('Website Traffic')">Add Website Traffic Widget</button>
+        <button onclick="addRandomWidget('Social Media')">Add Social Media Widget</button>
+    </div>
+
+    <div id="dashboard"></div>
+
+    <div id="widgets-container">
+        <div class="available-widget" draggable="true" ondragstart="drag(event)" id="salesWidget">
+            <h3>Sales</h3>
+            <p>Sales Data</p>
+        </div>
+        <div class="available-widget" draggable="true" ondragstart="drag(event)" id="trafficWidget">
+            <h3>Website Traffic</h3>
+            <p>Traffic Data</p>
+        </div>
+        <div class="available-widget" draggable="true" ondragstart="drag(event)" id="socialWidget">
+            <h3>Social Media</h3>
+            <p>Engagement Data</p>
+        </div>
+    </div>
+
+    <script>
+        // Data to be displayed in widgets
+        const randomData = {
+            sales: {
+                totalSales: Math.floor(Math.random() * 10000),
+                region: 'North America'
+            },
+            traffic: {
+                pageViews: Math.floor(Math.random() * 100000),
+                bounceRate: (Math.random() * 100).toFixed(2)
+            },
+            social: {
+                followers: Math.floor(Math.random() * 50000),
+                posts: Math.floor(Math.random() * 1000)
+            }
+        };
+
+        // Functions for drag-and-drop functionality
+        let draggedElement = null;
+
+        function drag(event) {
+            draggedElement = event.target;
+            event.dataTransfer.setData("text", event.target.id);
+        }
+
+        document.getElementById('dashboard').addEventListener('dragover', function(event) {
+            event.preventDefault();
+            event.target.classList.add('drag-over');
+        });
+
+        document.getElementById('dashboard').addEventListener('dragleave', function(event) {
+            event.target.classList.remove('drag-over');
+        });
+
+        document.getElementById('dashboard').addEventListener('drop', function(event) {
+            event.preventDefault();
+            event.target.classList.remove('drag-over');
+
+            // Create new widget based on dragged item
+            if (draggedElement) {
+                const widgetType = draggedElement.id;
+                addWidgetToDashboard(widgetType);
+            }
+        });
+
+        // Function to add a random widget to the dashboard
+        function addRandomWidget(type) {
+            const widgetData = generateRandomWidgetData(type);
+            createWidget(type, widgetData);
+        }
+
+        // Function to create and display the widget on the dashboard
+        function createWidget(type, widgetData) {
+            const widget = document.createElement('div');
+            widget.classList.add('widget');
+            widget.setAttribute('draggable', 'true');
+            widget.addEventListener('dragstart', drag);
+
+            const title = document.createElement('h3');
+            title.innerText = type;
+
+            const data = document.createElement('div');
+            data.classList.add('data');
+            data.innerHTML = widgetData;
+
+            widget.appendChild(title);
+            widget.appendChild(data);
+
+            document.getElementById('dashboard').appendChild(widget);
+        }
+
+        // Function to generate random widget data
+        function generateRandomWidgetData(type) {
+            let data = '';
+            if (type === 'Sales') {
+                data = `Total Sales: $${randomData.sales.totalSales}<br>Region: ${randomData.sales.region}`;
+            } else if (type === 'Website Traffic') {
+                data = `Page Views: ${randomData.traffic.pageViews}<br>Bounce Rate: ${randomData.traffic.bounceRate}%`;
+            } else if (type === 'Social Media') {
+                data = `Followers: ${randomData.social.followers}<br>Posts: ${randomData.social.posts}`;
+            }
+            return data;
+        }
+
+        // Function to add a widget to the dashboard by dragging from the available widgets
+        function addWidgetToDashboard(type) {
+            const widgetData = generateRandomWidgetData(type);
+            createWidget(type, widgetData);
+        }
+    </script>
+</body>
+</html>

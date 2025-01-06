@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSS Optimizer Tool</title>
+    <style>
+        /* Default Styles for the App */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        textarea {
+            width: 100%;
+            height: 150px;
+            padding: 10px;
+            font-family: monospace;
+            font-size: 14px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        .result {
+            margin-top: 20px;
+        }
+
+        .suggestion {
+            background-color: #f9f9f9;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .suggestion h3 {
+            margin: 0;
+        }
+
+        .suggestion p {
+            margin: 5px 0;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>CSS Performance Optimizer</h1>
+
+    <div class="form-group">
+        <label for="css-input">Paste Your CSS Here:</label>
+        <textarea id="css-input" placeholder="Paste your CSS code here..."></textarea>
+    </div>
+    <button onclick="analyzeCSS()">Analyze CSS</button>
+
+    <div class="result" id="result"></div>
+</div>
+
+<script>
+// Sample CSS file for testing with randomly generated styles
+const sampleCSS = `
+    body {
+        background-color: #f4f4f4;
+    }
+
+    .unused-class {
+        color: red;
+    }
+
+    .btn {
+        padding: 10px;
+        background-color: #008CBA;
+    }
+
+    .container {
+        width: 100%;
+        max-width: 1200px;
+        margin: auto;
+    }
+
+    .btn:hover {
+        background-color: #005f73;
+    }
+
+    .header {
+        font-size: 24px;
+        font-weight: bold;
+    }
+
+    .btn.btn-secondary {
+        color: white;
+        background-color: #555;
+    }
+`;
+
+// Analyze CSS file
+function analyzeCSS() {
+    const cssCode = document.getElementById('css-input').value || sampleCSS;
+    const unusedCSS = detectUnusedCSS(cssCode);
+    const selectorEfficiency = analyzeSelectorEfficiency(cssCode);
+    const modernCSSSuggestions = suggestModernCSSFeatures(cssCode);
+
+    // Display results
+    let resultHTML = '';
+    if (unusedCSS.length > 0) {
+        resultHTML += `<div class="suggestion"><h3>Unused CSS Detected:</h3><p>${unusedCSS.join(', ')}</p></div>`;
+    } else {
+        resultHTML += `<div class="suggestion"><h3>No Unused CSS Detected</h3></div>`;
+    }
+
+    if (selectorEfficiency.length > 0) {
+        resultHTML += `<div class="suggestion"><h3>Selector Efficiency Suggestions:</h3><ul>`;
+        selectorEfficiency.forEach(suggestion => {
+            resultHTML += `<li>${suggestion}</li>`;
+        });
+        resultHTML += `</ul></div>`;
+    }
+
+    if (modernCSSSuggestions.length > 0) {
+        resultHTML += `<div class="suggestion"><h3>Modern CSS Features to Use:</h3><ul>`;
+        modernCSSSuggestions.forEach(suggestion => {
+            resultHTML += `<li>${suggestion}</li>`;
+        });
+        resultHTML += `</ul></div>`;
+    }
+
+    document.getElementById('result').innerHTML = resultHTML;
+}
+
+// Detect Unused CSS Selectors (Placeholder Logic for Analysis)
+function detectUnusedCSS(cssCode) {
+    const unusedSelectors = [];
+    const selectors = cssCode.match(/[\.#][a-zA-Z0-9_-]+/g) || [];
+    const sampleHTML = document.body.innerHTML;
+
+    selectors.forEach(selector => {
+        if (!sampleHTML.includes(selector)) {
+            unusedSelectors.push(selector);
+        }
+    });
+
+    return unusedSelectors;
+}
+
+// Analyze Selector Efficiency (Example: Specificity and Redundancy)
+function analyzeSelectorEfficiency(cssCode) {
+    const suggestions = [];
+    const selectors = cssCode.match(/[\.#][a-zA-Z0-9_-]+/g) || [];
+
+    selectors.forEach(selector => {
+        // Suggest simplification for overly specific selectors
+        if (selector.match(/(\.btn\s+){2,}/)) {
+            suggestions.push(`Consider simplifying ${selector} selector`);
+        }
+
+        // Suggest using more modern selectors (e.g., :root, custom properties)
+        if (selector.includes('container')) {
+            suggestions.push(`Use CSS custom properties for better maintainability instead of repeating styles like ${selector}`);
+        }
+    });
+
+    return suggestions;
+}
+
+// Suggest Modern CSS Features
+function suggestModernCSSFeatures(cssCode) {
+    const suggestions = [];
+
+    // Suggest using CSS Grid or Flexbox
+    if (cssCode.includes('display: block;') || cssCode.includes('float: left;')) {
+        suggestions.push('Consider using CSS Grid or Flexbox for layout instead of block and float.');
+    }
+
+    // Suggest using CSS custom properties (variables)
+    if (!cssCode.includes('var(--')) {
+        suggestions.push('Consider using CSS custom properties (variables) for easier theming and maintainability.');
+    }
+
+    return suggestions;
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Collaborative Whiteboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            flex-direction: column;
+        }
+
+        #canvas {
+            border: 2px solid #333;
+            background-color: #fff;
+            cursor: crosshair;
+        }
+
+        #toolbar {
+            margin: 20px;
+        }
+
+        .button {
+            padding: 10px 20px;
+            background-color: #008CBA;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .button:hover {
+            background-color: #005f6b;
+        }
+    </style>
+</head>
+<body>
+    <div id="toolbar">
+        <button class="button" onclick="generateRandomDoodle()">Generate Random Doodle</button>
+    </div>
+    <canvas id="canvas" width="800" height="600"></canvas>
+
+    <script>
+        // Initialize WebSocket
+        const socket = new WebSocket('ws://localhost:8080');
+        let canvas = document.getElementById('canvas');
+        let ctx = canvas.getContext('2d');
+        let drawing = false;
+        let lastX = 0, lastY = 0;
+
+        // Random Doodles
+        const randomDoodles = [
+            { type: 'line', x1: 100, y1: 100, x2: 700, y2: 100, color: '#ff6347' },
+            { type: 'circle', x: 400, y: 300, radius: 50, color: '#4682b4' },
+            { type: 'rectangle', x: 200, y: 150, width: 400, height: 200, color: '#32cd32' }
+        ];
+
+        // Mouse Events for Drawing
+        canvas.addEventListener('mousedown', startDrawing);
+        canvas.addEventListener('mousemove', draw);
+        canvas.addEventListener('mouseup', stopDrawing);
+        canvas.addEventListener('mouseout', stopDrawing);
+
+        function startDrawing(e) {
+            drawing = true;
+            lastX = e.offsetX;
+            lastY = e.offsetY;
+        }
+
+        function draw(e) {
+            if (!drawing) return;
+            ctx.beginPath();
+            ctx.moveTo(lastX, lastY);
+            ctx.lineTo(e.offsetX, e.offsetY);
+            ctx.strokeStyle = '#000000';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+            ctx.closePath();
+            lastX = e.offsetX;
+            lastY = e.offsetY;
+
+            // Send drawing data to server
+            socket.send(JSON.stringify({ type: 'draw', x1: lastX, y1: lastY, x2: e.offsetX, y2: e.offsetY }));
+        }
+
+        function stopDrawing() {
+            drawing = false;
+        }
+
+        // Handle incoming drawing data from other users
+        socket.onmessage = function(event) {
+            const data = JSON.parse(event.data);
+            if (data.type === 'draw') {
+                drawLine(data.x1, data.y1, data.x2, data.y2);
+            } else if (data.type === 'randomDoodle') {
+                drawRandomDoodle(data.doodle);
+            }
+        };
+
+        // Function to draw lines received from other users
+        function drawLine(x1, y1, x2, y2) {
+            ctx.beginPath();
+            ctx.moveTo(x1, y1);
+            ctx.lineTo(x2, y2);
+            ctx.strokeStyle = '#000000';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+            ctx.closePath();
+        }
+
+        // Function to generate a random doodle
+        function generateRandomDoodle() {
+            const randomIndex = Math.floor(Math.random() * randomDoodles.length);
+            const doodle = randomDoodles[randomIndex];
+
+            socket.send(JSON.stringify({ type: 'randomDoodle', doodle }));
+            drawRandomDoodle(doodle);
+        }
+
+        // Function to draw the random doodle
+        function drawRandomDoodle(doodle) {
+            ctx.fillStyle = doodle.color;
+
+            if (doodle.type === 'line') {
+                ctx.beginPath();
+                ctx.moveTo(doodle.x1, doodle.y1);
+                ctx.lineTo(doodle.x2, doodle.y2);
+                ctx.lineWidth = 2;
+                ctx.stroke();
+                ctx.closePath();
+            } else if (doodle.type === 'circle') {
+                ctx.beginPath();
+                ctx.arc(doodle.x, doodle.y, doodle.radius, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.closePath();
+            } else if (doodle.type === 'rectangle') {
+                ctx.fillRect(doodle.x, doodle.y, doodle.width, doodle.height);
+            }
+        }
+    </script>
+</body>
+</html>

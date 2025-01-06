@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Intelligent Customer Service Portal</title>
+  <script src="https://cdn.jsdelivr.net/npm/@angular/core/bundles/core.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@angular/platform-browser/bundles/platform-browser.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@angular/platform-browser-dynamic/bundles/platform-browser-dynamic.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@angular/common/bundles/common.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/rxjs/bundles/rxjs.umd.min.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #f9f9f9;
+    }
+    .app-container {
+      text-align: center;
+    }
+    h1 {
+      color: #007acc;
+      margin: 20px;
+    }
+    .portal {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin: 20px;
+    }
+    .chat-container, .tickets-container, .knowledge-base {
+      width: 80%;
+      margin: 20px auto;
+      padding: 15px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      background: #fff;
+    }
+    .chat-log, .tickets-list, .kb-list {
+      max-height: 300px;
+      overflow-y: auto;
+      border: 1px solid #ddd;
+      padding: 10px;
+      background: #f1f1f1;
+      border-radius: 5px;
+    }
+    .chat-log div, .tickets-list div, .kb-list div {
+      margin: 10px 0;
+      padding: 8px;
+      border-radius: 4px;
+    }
+    .chat-log div.customer { background: #d1e7ff; }
+    .chat-log div.bot { background: #fce7f3; }
+    .chat-input {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 10px;
+    }
+    input[type="text"] {
+      width: 85%;
+      padding: 8px;
+    }
+    button {
+      padding: 8px 12px;
+      background: #007acc;
+      color: #fff;
+      border: none;
+      cursor: pointer;
+      border-radius: 4px;
+    }
+    button:hover {
+      background: #005f99;
+    }
+  </style>
+</head>
+<body>
+  <app-root>Loading...</app-root>
+
+  <script type="module">
+    import { enableProdMode } from '@angular/core';
+    import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
+    import { NgModule, Component, Input } from '@angular/core';
+    import { BrowserModule } from '@angular/platform-browser';
+
+    // Chat Component
+    @Component({
+      selector: 'app-chat',
+      template: `
+        <div class="chat-container">
+          <h2>Chatbot</h2>
+          <div class="chat-log">
+            <div *ngFor="let message of chatLog" [class]="message.type">{{ message.content }}</div>
+          </div>
+          <div class="chat-input">
+            <input type="text" [(ngModel)]="userMessage" placeholder="Type your message..." />
+            <button (click)="sendMessage()">Send</button>
+          </div>
+        </div>
+      `
+    })
+    class ChatComponent {
+      chatLog = [
+        { type: 'bot', content: 'Hello! How can I assist you today?' }
+      ];
+      userMessage = '';
+      sendMessage() {
+        if (this.userMessage.trim()) {
+          this.chatLog.push({ type: 'customer', content: this.userMessage });
+          setTimeout(() => {
+            this.chatLog.push({ type: 'bot', content: 'This is a mock response to your inquiry!' });
+          }, 1000);
+          this.userMessage = '';
+        }
+      }
+    }
+
+    // Tickets Component
+    @Component({
+      selector: 'app-tickets',
+      template: `
+        <div class="tickets-container">
+          <h2>Ticket Management</h2>
+          <div class="tickets-list">
+            <div *ngFor="let ticket of tickets">
+              <strong>{{ ticket.subject }}</strong>: {{ ticket.status }}
+            </div>
+          </div>
+        </div>
+      `
+    })
+    class TicketsComponent {
+      tickets = Array.from({ length: 5 }, (_, i) => ({
+        subject: `Issue #${i + 1}`,
+        status: Math.random() > 0.5 ? 'Resolved' : 'Pending'
+      }));
+    }
+
+    // Knowledge Base Component
+    @Component({
+      selector: 'app-knowledge-base',
+      template: `
+        <div class="knowledge-base">
+          <h2>Knowledge Base</h2>
+          <input type="text" [(ngModel)]="searchTerm" placeholder="Search the knowledge base..." />
+          <div class="kb-list">
+            <div *ngFor="let article of filteredArticles">
+              <strong>{{ article.title }}</strong>: {{ article.content }}
+            </div>
+          </div>
+        </div>
+      `
+    })
+    class KnowledgeBaseComponent {
+      searchTerm = '';
+      articles = Array.from({ length: 8 }, (_, i) => ({
+        title: `Topic ${i + 1}`,
+        content: `This is a mock content for topic ${i + 1}.`
+      }));
+      get filteredArticles() {
+        return this.articles.filter(article =>
+          article.title.toLowerCase().includes(this.searchTerm.toLowerCase())
+        );
+      }
+    }
+
+    // App Component
+    @Component({
+      selector: 'app-root',
+      template: `
+        <div class="app-container">
+          <h1>Intelligent Customer Service Portal</h1>
+          <div class="portal">
+            <app-chat></app-chat>
+            <app-tickets></app-tickets>
+            <app-knowledge-base></app-knowledge-base>
+          </div>
+        </div>
+      `
+    })
+    class AppComponent {}
+
+    // Main Module
+    @NgModule({
+      declarations: [AppComponent, ChatComponent, TicketsComponent, KnowledgeBaseComponent],
+      imports: [BrowserModule],
+      bootstrap: [AppComponent]
+    })
+    class AppModule {}
+
+    platformBrowserDynamic().bootstrapModule(AppModule);
+  </script>
+</body>
+</html>

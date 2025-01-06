@@ -1,0 +1,11 @@
+<div>
+    <h2>Interactive Quizzes</h2>
+    <div *ngFor="let question of questions">
+      <h3>{{ question.question }}</h3>
+      <div *ngFor="let option of question.options">
+        <label>
+          <input type="radio" name="{{ question.question }}" /> {{ option }}
+        </label>
+      </div>
+    </div>
+  </div>  

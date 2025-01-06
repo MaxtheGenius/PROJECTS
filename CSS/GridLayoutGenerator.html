@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSS Grid Layout Builder</title>
+    <style>
+        /* Basic Styles */
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        .grid-builder {
+            width: 80%;
+            max-width: 1000px;
+            margin: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            width: 100%;
+            max-width: 900px;
+            margin-bottom: 20px;
+        }
+
+        .grid-item {
+            background-color: #ddd;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border: 1px solid #ccc;
+            padding: 20px;
+            font-size: 14px;
+        }
+
+        .generate-css-button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-bottom: 20px;
+        }
+
+        .generate-css-button:hover {
+            background-color: #45a049;
+        }
+
+        .css-output {
+            margin-top: 20px;
+            background-color: #222;
+            color: white;
+            padding: 20px;
+            width: 100%;
+            max-width: 900px;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            font-family: monospace;
+        }
+
+        .placeholder {
+            background-color: #5c6bc0;
+            color: white;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .controls {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* Responsive Breakpoints */
+        @media (max-width: 768px) {
+            .grid-container {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .grid-container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <h1>CSS Grid Layout Builder</h1>
+    <div class="grid-builder">
+        <div class="controls">
+            <button class="generate-css-button" onclick="generateCSS()">Generate CSS Code</button>
+        </div>
+
+        <div class="grid-container" id="gridContainer">
+            <!-- Grid Items will be added here -->
+        </div>
+
+        <div class="css-output" id="cssOutput">
+            /* Generated CSS will appear here */
+        </div>
+    </div>
+
+    <script>
+        // Define the grid layout and random placeholder content generation
+        const gridContainer = document.getElementById("gridContainer");
+        const cssOutput = document.getElementById("cssOutput");
+
+        // Random placeholder content generator
+        const getRandomPlaceholderContent = () => {
+            const contentOptions = [
+                "Header", "Main Content", "Sidebar", "Footer", "Image", "Video", "Ad", "Button", "Text Block", "Gallery"
+            ];
+            return contentOptions[Math.floor(Math.random() * contentOptions.length)];
+        };
+
+        // Populate the grid with randomly generated items
+        const createGridItems = (rows = 3, columns = 4) => {
+            gridContainer.innerHTML = ''; // Clear existing grid items
+            for (let i = 0; i < rows * columns; i++) {
+                const gridItem = document.createElement("div");
+                gridItem.classList.add("grid-item", "placeholder");
+                gridItem.textContent = getRandomPlaceholderContent();
+                gridContainer.appendChild(gridItem);
+            }
+        };
+
+        // Generate CSS code based on the current grid layout
+        const generateCSS = () => {
+            const gridItems = document.querySelectorAll(".grid-item");
+            const cssCode = `
+/* CSS Grid Layout */
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+}
+
+/* Grid Items */
+.grid-item {
+    background-color: #ddd;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid #ccc;
+    padding: 20px;
+    font-size: 14px;
+}
+
+/* Responsive Breakpoints */
+@media (max-width: 768px) {
+    .grid-container {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 480px) {
+    .grid-container {
+        grid-template-columns: 1fr;
+    }
+}
+            `;
+            cssOutput.textContent = cssCode;
+        };
+
+        // Initialize the grid with default content
+        createGridItems();
+
+    </script>
+</body>
+</html>

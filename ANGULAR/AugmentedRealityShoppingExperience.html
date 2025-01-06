@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AR Shopping Experience</title>
+  <script src="https://cdn.jsdelivr.net/npm/@angular/core@latest/bundles/core.umd.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@angular/common@latest/bundles/common.umd.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@angular/compiler@latest/bundles/compiler.umd.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@angular/platform-browser@latest/bundles/platform-browser.umd.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@angular/platform-browser-dynamic@latest/bundles/platform-browser-dynamic.umd.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@angular/forms@latest/bundles/forms.umd.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@angular/router@latest/bundles/router.umd.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/zone.js@latest/dist/zone.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/webxr-polyfill@latest"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@latest/build/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@google/model-viewer@latest/dist/model-viewer.min.js"></script>
+  <script>
+    (function(app) {
+      // Main Module
+      app.AppModule = ng.core.NgModule({
+        imports: [
+          ng.platformBrowser.BrowserModule,
+          ng.forms.FormsModule,
+          ng.router.RouterModule.forRoot([
+            { path: '', component: app.HomeComponent }
+          ])
+        ],
+        declarations: [
+          app.AppComponent,
+          app.HomeComponent
+        ],
+        bootstrap: [app.AppComponent]
+      }).Class({
+        constructor: function() {}
+      });
+
+      // App Component
+      app.AppComponent = ng.core.Component({
+        selector: 'app-root',
+        template: `
+          <nav>
+            <a routerLink="/">Home</a>
+          </nav>
+          <router-outlet></router-outlet>
+        `
+      }).Class({
+        constructor: function() {}
+      });
+
+      // Home Component
+      app.HomeComponent = ng.core.Component({
+        selector: 'app-home',
+        template: `
+          <div>
+            <h1>Welcome to the AR Shopping Experience</h1>
+            <p>View products in AR right in your environment.</p>
+
+            <button (click)="enterAR()">Enter AR Mode</button>
+            
+            <div *ngIf="isArMode" style="margin-top: 20px;">
+              <h2>Select a Product to View in AR</h2>
+              <ul>
+                <li *ngFor="let product of products">
+                  <button (click)="viewInAR(product)">
+                    {{ product.name }}
+                  </button>
+                </li>
+              </ul>
+              <model-viewer id="ar-viewer" 
+                            *ngIf="selectedProduct" 
+                            src="{{ selectedProduct.model }}" 
+                            alt="3D model of {{ selectedProduct.name }}" 
+                            ar 
+                            auto-rotate 
+                            camera-controls>
+              </model-viewer>
+            </div>
+          </div>
+        `
+      }).Class({
+        constructor: function() {
+          this.isArMode = false;
+          this.selectedProduct = null;
+          this.products = [
+            { 
+              name: 'Sofa', 
+              model: 'https://example.com/sofa.glb' // Random 3D model URL for the sofa 
+            },
+            { 
+              name: 'T-shirt', 
+              model: 'https://example.com/tshirt.glb' // Random 3D model URL for the T-shirt 
+            },
+            { 
+              name: 'Coffee Table', 
+              model: 'https://example.com/coffeetable.glb' // Random 3D model URL for the coffee table 
+            }
+          ];
+        },
+        enterAR: function() {
+          // Check if WebXR is supported
+          if (navigator.xr) {
+            navigator.xr.requestSession('immersive-ar').then((session) => {
+              this.isArMode = true;
+              this.detectWebXRSession(session);
+            }).catch((error) => {
+              alert('AR not supported on this device.');
+            });
+          } else {
+            alert('AR is not supported on your device.');
+          }
+        },
+        detectWebXRSession: function(session) {
+          // Handle the AR session
+          console.log('AR session started:', session);
+        },
+        viewInAR: function(product) {
+          this.selectedProduct = product;
+        }
+      });
+
+      document.addEventListener('DOMContentLoaded', function() {
+        ng.platformBrowserDynamic.platformBrowserDynamic()
+          .bootstrapModule(app.AppModule);
+      });
+    })(window.app || (window.app = {}));
+  </script>
+</head>
+<body>
+  <app-root>Loading...</app-root>
+</body>
+</html>

@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>IoT Management Console</title>
+  <script src="https://cdn.jsdelivr.net/npm/@angular/core@latest/bundles/core.umd.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@angular/common@latest/bundles/common.umd.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@angular/compiler@latest/bundles/compiler.umd.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@angular/platform-browser@latest/bundles/platform-browser.umd.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@angular/platform-browser-dynamic@latest/bundles/platform-browser-dynamic.umd.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@angular/forms@latest/bundles/forms.umd.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@angular/router@latest/bundles/router.umd.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/zone.js@latest/dist/zone.js"></script>
+  <script>
+    // Main Angular Module
+    (function(app) {
+      app.AppModule = ng.core.NgModule({
+        imports: [
+          ng.platformBrowser.BrowserModule,
+          ng.forms.FormsModule,
+          ng.router.RouterModule.forRoot([
+            { path: '', redirectTo: 'device-monitoring', pathMatch: 'full' },
+            { path: 'device-monitoring', component: app.DeviceMonitoringComponent },
+            { path: 'firmware-updates', component: app.FirmwareUpdatesComponent },
+            { path: 'data-visualization', component: app.DataVisualizationComponent }
+          ])
+        ],
+        declarations: [
+          app.AppComponent,
+          app.DeviceMonitoringComponent,
+          app.FirmwareUpdatesComponent,
+          app.DataVisualizationComponent
+        ],
+        bootstrap: [app.AppComponent]
+      }).Class({
+        constructor: function() {}
+      });
+
+      // App Component
+      app.AppComponent = ng.core.Component({
+        selector: 'app-root',
+        template: `
+          <nav>
+            <a routerLink="/device-monitoring">Device Monitoring</a> |
+            <a routerLink="/firmware-updates">Firmware Updates</a> |
+            <a routerLink="/data-visualization">Data Visualization</a>
+          </nav>
+          <router-outlet></router-outlet>
+        `
+      }).Class({
+        constructor: function() {}
+      });
+
+      // Device Monitoring Component
+      app.DeviceMonitoringComponent = ng.core.Component({
+        selector: 'app-device-monitoring',
+        template: `
+          <div>
+            <h2>Device Monitoring</h2>
+            <ul>
+              <li *ngFor="let device of devices">
+                <strong>{{ device.id }}</strong> - Status: {{ device.status }} - Health: {{ device.health }}
+              </li>
+            </ul>
+          </div>
+        `
+      }).Class({
+        constructor: function() {
+          this.devices = Array.from({ length: 10 }, (_, i) => ({
+            id: `Device-${i + 1}`,
+            status: Math.random() > 0.5 ? 'Online' : 'Offline',
+            health: ['Good', 'Fair', 'Critical'][Math.floor(Math.random() * 3)],
+          }));
+        }
+      });
+
+      // Firmware Updates Component
+      app.FirmwareUpdatesComponent = ng.core.Component({
+        selector: 'app-firmware-updates',
+        template: `
+          <div>
+            <h2>Firmware Updates</h2>
+            <ul>
+              <li *ngFor="let device of devices">
+                <strong>{{ device.id }}</strong> - Current Version: {{ device.currentVersion }}
+                <button *ngIf="device.availableUpdate" (click)="updateFirmware(device.id)">
+                  Update Firmware
+                </button>
+              </li>
+            </ul>
+          </div>
+        `
+      }).Class({
+        constructor: function() {
+          this.devices = Array.from({ length: 5 }, (_, i) => ({
+            id: `Device-${i + 1}`,
+            currentVersion: `v${1 + Math.random().toFixed(1)}`,
+            availableUpdate: Math.random() > 0.5,
+          }));
+        },
+        updateFirmware: function(deviceId) {
+          alert(`Firmware update initiated for ${deviceId}`);
+        }
+      });
+
+      // Data Visualization Component
+      app.DataVisualizationComponent = ng.core.Component({
+        selector: 'app-data-visualization',
+        template: `
+          <div>
+            <h2>Data Visualization</h2>
+            <table>
+              <tr>
+                <th>Sensor ID</th>
+                <th>Temperature (°C)</th>
+                <th>Humidity (%)</th>
+              </tr>
+              <tr *ngFor="let data of sensorData">
+                <td>{{ data.id }}</td>
+                <td>{{ data.temperature }}</td>
+                <td>{{ data.humidity }}</td>
+              </tr>
+            </table>
+          </div>
+        `
+      }).Class({
+        constructor: function() {
+          this.sensorData = Array.from({ length: 10 }, (_, i) => ({
+            id: `Sensor-${i + 1}`,
+            temperature: (20 + Math.random() * 15).toFixed(2),
+            humidity: (30 + Math.random() * 20).toFixed(2),
+          }));
+        }
+      });
+
+      document.addEventListener('DOMContentLoaded', function() {
+        ng.platformBrowserDynamic.platformBrowserDynamic()
+          .bootstrapModule(app.AppModule);
+      });
+    })(window.app || (window.app = {}));
+  </script>
+</head>
+<body>
+  <app-root>Loading...</app-root>
+</body>
+</html>

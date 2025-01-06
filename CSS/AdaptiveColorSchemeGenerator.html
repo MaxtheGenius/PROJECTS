@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Color Scheme Generator</title>
+    <style>
+        /* Basic Styling */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            flex-direction: column;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        .container {
+            width: 80%;
+            max-width: 600px;
+            text-align: center;
+        }
+
+        .input-section {
+            margin: 20px 0;
+        }
+
+        .color-input {
+            width: 100%;
+            height: 40px;
+            font-size: 16px;
+            padding: 10px;
+            margin-top: 10px;
+            border-radius: 5px;
+            border: 2px solid #ccc;
+            outline: none;
+            text-align: center;
+        }
+
+        .generate-button, .random-button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .generate-button:hover, .random-button:hover {
+            background-color: #45a049;
+        }
+
+        .color-display {
+            margin-top: 30px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .color-block {
+            width: 100px;
+            height: 100px;
+            margin: 10px;
+            border-radius: 10px;
+        }
+
+        .color-label {
+            text-align: center;
+            color: #333;
+            margin-top: 5px;
+            font-size: 14px;
+        }
+
+        /* Dark Mode */
+        body[data-theme="dark"] {
+            background-color: #333;
+            color: white;
+        }
+
+        body[data-theme="dark"] .color-input {
+            background-color: #444;
+            color: white;
+            border-color: #666;
+        }
+
+        body[data-theme="dark"] .generate-button, body[data-theme="dark"] .random-button {
+            background-color: #006400;
+        }
+
+        body[data-theme="dark"] .generate-button:hover, body[data-theme="dark"] .random-button:hover {
+            background-color: #004d00;
+        }
+
+        .theme-toggle {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #333;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .theme-toggle:hover {
+            background-color: #444;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Color Scheme Generator</h1>
+
+        <div class="input-section">
+            <label for="baseColor">Enter a Base Color (Hex format):</label>
+            <input type="text" id="baseColor" class="color-input" placeholder="#3498db">
+            <button class="generate-button" onclick="generateColors()">Generate Scheme</button>
+            <button class="random-button" onclick="generateRandomColor()">Random Color Scheme</button>
+        </div>
+
+        <div class="color-display" id="colorDisplay"></div>
+
+        <button class="theme-toggle" onclick="toggleTheme()">Toggle Dark/Light Mode</button>
+    </div>
+
+    <script>
+        // Function to generate harmonious color schemes based on input color
+        function generateColors() {
+            const baseColor = document.getElementById("baseColor").value || '#3498db'; // Default color
+            const colorScheme = generateColorScheme(baseColor);
+
+            const colorDisplay = document.getElementById('colorDisplay');
+            colorDisplay.innerHTML = '';
+
+            colorScheme.forEach((color, index) => {
+                const colorBlock = document.createElement('div');
+                colorBlock.classList.add('color-block');
+                colorBlock.style.backgroundColor = color;
+
+                const colorLabel = document.createElement('div');
+                colorLabel.classList.add('color-label');
+                colorLabel.textContent = `${color}`;
+
+                colorBlock.appendChild(colorLabel);
+                colorDisplay.appendChild(colorBlock);
+            });
+        }
+
+        // Function to generate random color scheme
+        function generateRandomColor() {
+            const randomColor = getRandomColor();
+            document.getElementById("baseColor").value = randomColor;
+            generateColors(); // Regenerate with random base color
+        }
+
+        // Generate a random hex color
+        function getRandomColor() {
+            const letters = '0123456789ABCDEF';
+            let color = '#';
+            for (let i = 0; i < 6; i++) {
+                color += letters[Math.floor(Math.random() * 16)];
+            }
+            return color;
+        }
+
+        // Function to generate a harmonious color scheme
+        function generateColorScheme(baseColor) {
+            const colorScheme = [];
+            const baseRGB = hexToRgb(baseColor);
+            
+            // Generate lighter and darker variations
+            for (let i = -3; i <= 3; i++) {
+                let newColor = adjustColor(baseRGB, i * 20); // Lighten or darken
+                colorScheme.push(rgbToHex(newColor));
+            }
+
+            return colorScheme;
+        }
+
+        // Adjust the RGB value for a lighter/darker tone
+        function adjustColor(rgb, value) {
+            return {
+                r: Math.min(255, Math.max(0, rgb.r + value)),
+                g: Math.min(255, Math.max(0, rgb.g + value)),
+                b: Math.min(255, Math.max(0, rgb.b + value))
+            };
+        }
+
+        // Convert RGB to Hex
+        function rgbToHex(rgb) {
+            return `#${((1 << 24) | (rgb.r << 16) | (rgb.g << 8) | rgb.b).toString(16).slice(1).toUpperCase()}`;
+        }
+
+        // Convert Hex to RGB
+        function hexToRgb(hex) {
+            const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+            return result ? {
+                r: parseInt(result[1], 16),
+                g: parseInt(result[2], 16),
+                b: parseInt(result[3], 16)
+            } : null;
+        }
+
+        // Toggle dark and light mode
+        function toggleTheme() {
+            const body = document.body;
+            const currentTheme = body.getAttribute('data-theme');
+            if (currentTheme === 'dark') {
+                body.removeAttribute('data-theme');
+            } else {
+                body.setAttribute('data-theme', 'dark');
+            }
+        }
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Component Library Customizer</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        /* Default Styles */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f7f7f7;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        /* Customizer Panel */
+        .customizer-panel {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 40px;
+        }
+
+        .customizer-panel h2 {
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .btn {
+            margin-top: 10px;
+        }
+
+        /* Custom Styles */
+        .custom-theme {
+            margin-top: 40px;
+        }
+
+        .btn-custom {
+            background-color: var(--btn-bg, #007bff);
+            color: var(--btn-color, #fff);
+        }
+
+        .navbar-custom {
+            background-color: var(--navbar-bg, #343a40);
+        }
+
+        .card-custom {
+            border: 1px solid var(--card-border, #ddd);
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Component Library Customizer</h1>
+
+    <!-- Customizer Panel -->
+    <div class="customizer-panel">
+        <h2>Customize Theme</h2>
+        <form id="theme-form">
+            <!-- Navbar Color -->
+            <div class="form-group">
+                <label for="navbar-bg">Navbar Background Color</label>
+                <input type="color" id="navbar-bg" class="form-control" value="#343a40">
+            </div>
+            <!-- Button Color -->
+            <div class="form-group">
+                <label for="btn-bg">Button Background Color</label>
+                <input type="color" id="btn-bg" class="form-control" value="#007bff">
+            </div>
+            <!-- Card Border Color -->
+            <div class="form-group">
+                <label for="card-border">Card Border Color</label>
+                <input type="color" id="card-border" class="form-control" value="#ddd">
+            </div>
+            <!-- Randomize Button -->
+            <button type="button" class="btn btn-secondary btn-block" onclick="applyRandomStyles()">Randomize Styles</button>
+            <!-- Apply Changes -->
+            <button type="submit" class="btn btn-primary btn-block">Apply Changes</button>
+        </form>
+    </div>
+
+    <!-- Preview Section -->
+    <div class="custom-theme">
+        <nav class="navbar navbar-expand-lg navbar-custom">
+            <a class="navbar-brand text-white" href="#">Navbar</a>
+        </nav>
+
+        <div class="card card-custom">
+            <div class="card-body">
+                <h5 class="card-title">Card title</h5>
+                <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                <button class="btn btn-custom">Go somewhere</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Apply Custom Styles to Components
+    function applyCustomStyles() {
+        const navbarBg = document.getElementById('navbar-bg').value;
+        const btnBg = document.getElementById('btn-bg').value;
+        const cardBorder = document.getElementById('card-border').value;
+
+        document.documentElement.style.setProperty('--navbar-bg', navbarBg);
+        document.documentElement.style.setProperty('--btn-bg', btnBg);
+        document.documentElement.style.setProperty('--card-border', cardBorder);
+    }
+
+    // Generate Random Styles for Quick Prototyping
+    function applyRandomStyles() {
+        const randomColor = () => '#' + Math.floor(Math.random() * 16777215).toString(16);
+        document.getElementById('navbar-bg').value = randomColor();
+        document.getElementById('btn-bg').value = randomColor();
+        document.getElementById('card-border').value = randomColor();
+
+        applyCustomStyles();
+    }
+
+    // Handle Form Submission
+    document.getElementById('theme-form').addEventListener('submit', function(e) {
+        e.preventDefault();
+        applyCustomStyles();
+    });
+</script>
+
+</body>
+</html>

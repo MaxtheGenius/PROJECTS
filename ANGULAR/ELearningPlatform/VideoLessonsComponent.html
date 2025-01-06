@@ -1,0 +1,8 @@
+<div>
+    <h2>Video Lessons</h2>
+    <div *ngFor="let lesson of lessons">
+      <h3>{{ lesson.title }}</h3>
+      <p>{{ lesson.description }}</p>
+      <iframe [src]="lesson.videoUrl" width="400" height="200"></iframe>
+    </div>
+  </div>  

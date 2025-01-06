@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Infographics Platform</title>
+    <style>
+        /* General styles for the page */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            flex-direction: column;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1000px;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        /* Styling for the charts and components */
+        .chart {
+            margin-top: 30px;
+            display: inline-block;
+            width: 200px;
+            height: 200px;
+            position: relative;
+            border-radius: 10px;
+            background-color: #e2e2e2;
+            overflow: hidden;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .bar {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+        }
+
+        .bar div {
+            width: 30px;
+            margin: 0 5px;
+            background-color: #4CAF50;
+            border-radius: 5px;
+            transition: height 0.8s ease-out;
+        }
+
+        .bar div:hover {
+            background-color: #45a049;
+        }
+
+        .pie-chart {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            background: conic-gradient(#4CAF50 0%, #45a049 25%, #f44336 50%, #ff9800 75%);
+            position: relative;
+            transition: transform 1s;
+        }
+
+        .pie-chart:hover {
+            transform: scale(1.1);
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 30px;
+            background-color: #ddd;
+            border-radius: 5px;
+            position: relative;
+            margin-top: 20px;
+        }
+
+        .progress-bar .filler {
+            height: 100%;
+            background-color: #4CAF50;
+            border-radius: 5px;
+            width: 0;
+            transition: width 1s ease-out;
+        }
+
+        /* Data set display */
+        .data-set-display {
+            margin-top: 30px;
+        }
+
+        .data-set-display div {
+            margin-bottom: 20px;
+        }
+
+        .data-label {
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+
+        /* Button to generate new random data */
+        .generate-button {
+            margin-top: 30px;
+            padding: 10px 20px;
+            background-color: #2196F3;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .generate-button:hover {
+            background-color: #1e88e5;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Interactive Infographics Platform</h1>
+
+    <div class="container">
+        <!-- Bar Chart -->
+        <div class="chart" id="barChart">
+            <div class="bar">
+                <!-- Bars will be populated dynamically -->
+            </div>
+        </div>
+
+        <!-- Pie Chart -->
+        <div class="pie-chart" id="pieChart"></div>
+
+        <!-- Progress Bar -->
+        <div class="progress-bar">
+            <div class="filler" id="progressBarFiller"></div>
+        </div>
+
+        <!-- Data Set Display -->
+        <div class="data-set-display" id="dataSetDisplay">
+            <div>
+                <div class="data-label">Bar Chart Data:</div>
+                <div id="barChartData"></div>
+            </div>
+            <div>
+                <div class="data-label">Pie Chart Data:</div>
+                <div id="pieChartData"></div>
+            </div>
+            <div>
+                <div class="data-label">Progress Bar Data:</div>
+                <div id="progressBarData"></div>
+            </div>
+        </div>
+
+        <!-- Button to generate new random data -->
+        <button class="generate-button" onclick="generateRandomData()">Generate New Data</button>
+    </div>
+
+    <script>
+        // Function to generate random data
+        function generateRandomData() {
+            // Random data for Bar Chart
+            const barData = Array.from({ length: 5 }, () => Math.floor(Math.random() * 100) + 20);
+            const barChart = document.getElementById('barChart').querySelector('.bar');
+            barChart.innerHTML = ''; // Clear existing bars
+
+            barData.forEach(value => {
+                const bar = document.createElement('div');
+                bar.style.height = value + '%';
+                bar.style.backgroundColor = generateRandomColor();
+                barChart.appendChild(bar);
+            });
+
+            // Display bar data
+            document.getElementById('barChartData').innerText = `Values: ${barData.join(', ')}`;
+
+            // Random data for Pie Chart
+            const pieData = [Math.floor(Math.random() * 50) + 10, Math.floor(Math.random() * 50) + 10, Math.floor(Math.random() * 50) + 10, Math.floor(Math.random() * 50) + 10];
+            const pieChart = document.getElementById('pieChart');
+            pieChart.style.background = `conic-gradient(#4CAF50 0%, #45a049 ${pieData[0]}%, #f44336 ${pieData[0] + pieData[1]}%, #ff9800 ${pieData[0] + pieData[1] + pieData[2]}%)`;
+
+            // Display pie data
+            document.getElementById('pieChartData').innerText = `Values: ${pieData.join(', ')}`;
+
+            // Random data for Progress Bar
+            const progressValue = Math.floor(Math.random() * 100) + 1;
+            const progressBarFiller = document.getElementById('progressBarFiller');
+            progressBarFiller.style.width = progressValue + '%';
+
+            // Display progress bar data
+            document.getElementById('progressBarData').innerText = `Value: ${progressValue}%`;
+        }
+
+        // Generate a random color
+        function generateRandomColor() {
+            const letters = '0123456789ABCDEF';
+            let color = '#';
+            for (let i = 0; i < 6; i++) {
+                color += letters[Math.floor(Math.random() * 16)];
+            }
+            return color;
+        }
+
+        // Initial load with random data
+        generateRandomData();
+    </script>
+
+</body>
+</html>

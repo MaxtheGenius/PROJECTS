@@ -1,0 +1,9 @@
+[package]
+name = "solana-defi"
+version = "0.1.0"
+edition = "2018"
+
+[dependencies]
+anchor-lang = "0.24.2"
+solana-program = "1.10.28"
+rand = "0.8"  # For generating random transactions

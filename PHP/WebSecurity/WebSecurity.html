@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Two-Factor Authentication</title>
+</head>
+
+<body>
+    <h1>Two-Factor Authentication System</h1>
+    <?php if (!isset($_SESSION['auth_token'])): ?>
+    <!-- Step 6.1: Form to request email -->
+    <form method="post" action="">
+        <label for="email">Enter your email:</label>
+        <input type="email" name="email" id="email" required>
+        <button type="submit">Send Token</button>
+    </form>
+    <?php else: ?>
+    <!-- Step 6.2: Form to verify token -->
+    <form method="post" action="">
+        <label for="token">Enter the token sent to your email:</label>
+        <input type="text" name="token" id="token" required>
+        <button type="submit">Verify Token</button>
+    </form>
+    <?php endif; ?>
+</body>
+
+</html>

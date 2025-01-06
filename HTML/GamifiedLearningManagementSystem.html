@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Educational Platform</title>
+    <style>
+        /* General Styles */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            width: 80%;
+            margin: auto;
+        }
+
+        .header {
+            text-align: center;
+            font-size: 2.5em;
+            margin-bottom: 30px;
+        }
+
+        .course-card {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            cursor: pointer;
+        }
+
+        .course-card:hover {
+            background-color: #e2e8f0;
+        }
+
+        .quiz-section {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
+        }
+
+        .question {
+            margin-bottom: 15px;
+            font-size: 1.2em;
+        }
+
+        .answers {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .answer {
+            padding: 10px;
+            background-color: #008CBA;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px 0;
+            width: 100%;
+        }
+
+        .answer:hover {
+            background-color: #005f6b;
+        }
+
+        .progress-bar {
+            width: 100%;
+            background-color: #f3f3f3;
+            border-radius: 5px;
+            margin-top: 20px;
+        }
+
+        .progress-bar-inner {
+            width: 0;
+            height: 25px;
+            background-color: #008CBA;
+            border-radius: 5px;
+            text-align: center;
+            color: white;
+        }
+
+        .score {
+            font-size: 1.5em;
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .points {
+            font-size: 1.2em;
+            color: #008CBA;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="header">Interactive Educational Platform</div>
+
+        <!-- Course List -->
+        <div id="courses" class="course-list">
+            <!-- Courses will be dynamically generated here -->
+        </div>
+
+        <!-- Quiz Section -->
+        <div id="quizSection" class="quiz-section" style="display:none;">
+            <div id="questionContent">
+                <!-- Question and answers will go here -->
+            </div>
+            <div id="quizResult" style="display:none;">
+                <div class="score">
+                    Your Score: <span id="score">0</span> / 5
+                </div>
+                <div class="points">
+                    <span id="points">Points Earned: 0</span>
+                </div>
+                <button onclick="backToCourses()" class="answer">Back to Courses</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Random Course Data for Demonstration
+        const courses = [
+            {
+                title: "Introduction to Programming",
+                description: "Learn the basics of programming with simple exercises and interactive lessons.",
+                lessons: [
+                    "Lesson 1: Variables and Data Types",
+                    "Lesson 2: Loops and Conditionals",
+                    "Lesson 3: Functions and Arrays"
+                ],
+                quiz: [
+                    { question: "What is a variable?", answers: ["A type of function", "A placeholder for a value", "A loop structure"], correct: 1 },
+                    { question: "What is an array?", answers: ["A function", "A data structure to store multiple values", "A loop"], correct: 1 },
+                    { question: "What does 'if' do in programming?", answers: ["Runs a loop", "Checks a condition", "Defines a variable"], correct: 1 },
+                    { question: "Which of these is a programming language?", answers: ["HTML", "Python", "CSS"], correct: 1 },
+                    { question: "What is a function?", answers: ["A set of instructions to perform a task", "A variable", "A loop"], correct: 0 }
+                ]
+            },
+            {
+                title: "Web Development Basics",
+                description: "Understand the fundamentals of web development, including HTML, CSS, and JavaScript.",
+                lessons: [
+                    "Lesson 1: Introduction to HTML",
+                    "Lesson 2: Introduction to CSS",
+                    "Lesson 3: Basic JavaScript"
+                ],
+                quiz: [
+                    { question: "What does HTML stand for?", answers: ["HyperText Markup Language", "HyperText Model Language", "Home Text Markup Language"], correct: 0 },
+                    { question: "What is CSS used for?", answers: ["To style the layout of the webpage", "To structure the webpage", "To store data"], correct: 0 },
+                    { question: "Which tag is used to define an HTML link?", answers: ["<link>", "<a>", "<href>"], correct: 1 },
+                    { question: "What does JavaScript do?", answers: ["Styles a webpage", "Adds interactivity to a webpage", "Structures the webpage"], correct: 1 },
+                    { question: "Which is a JavaScript keyword?", answers: ["const", "div", "header"], correct: 0 }
+                ]
+            }
+        ];
+
+        let currentCourseIndex = -1;
+        let currentQuizIndex = 0;
+        let currentScore = 0;
+
+        // Display Courses
+        function displayCourses() {
+            const coursesContainer = document.getElementById("courses");
+            coursesContainer.innerHTML = '';
+            courses.forEach((course, index) => {
+                const courseCard = document.createElement("div");
+                courseCard.className = "course-card";
+                courseCard.innerHTML = `
+                    <h3>${course.title}</h3>
+                    <p>${course.description}</p>
+                `;
+                courseCard.onclick = function() {
+                    startQuiz(index);
+                };
+                coursesContainer.appendChild(courseCard);
+            });
+        }
+
+        // Start Quiz for Selected Course
+        function startQuiz(courseIndex) {
+            currentCourseIndex = courseIndex;
+            currentQuizIndex = 0;
+            currentScore = 0;
+            const course = courses[courseIndex];
+            document.getElementById("courses").style.display = "none";
+            document.getElementById("quizSection").style.display = "block";
+            displayQuestion();
+        }
+
+        // Display the current question
+        function displayQuestion() {
+            const course = courses[currentCourseIndex];
+            const quiz = course.quiz[currentQuizIndex];
+            const questionContent = document.getElementById("questionContent");
+            questionContent.innerHTML = `
+                <div class="question">${quiz.question}</div>
+                <ul class="answers">
+                    ${quiz.answers.map((answer, index) => `
+                        <li><button class="answer" onclick="checkAnswer(${index})">${answer}</button></li>
+                    `).join('')}
+                </ul>
+            `;
+        }
+
+        // Check Answer and Update Progress
+        function checkAnswer(selectedAnswerIndex) {
+            const course = courses[currentCourseIndex];
+            const correctAnswerIndex = course.quiz[currentQuizIndex].correct;
+
+            if (selectedAnswerIndex === correctAnswerIndex) {
+                currentScore++;
+            }
+
+            currentQuizIndex++;
+
+            if (currentQuizIndex < course.quiz.length) {
+                displayQuestion();
+            } else {
+                showResult();
+            }
+        }
+
+        // Show Result and Points Earned
+        function showResult() {
+            document.getElementById("questionContent").style.display = "none";
+            document.getElementById("quizResult").style.display = "block";
+            document.getElementById("score").textContent = currentScore;
+            document.getElementById("points").textContent = `Points Earned: ${currentScore * 10}`;
+            updateProgressBar();
+        }
+
+        // Update Progress Bar based on Score
+        function updateProgressBar() {
+            const progress = (currentScore / 5) * 100;
+            const progressBar = document.createElement("div");
+            progressBar.className = "progress-bar";
+            progressBar.innerHTML = `<div class="progress-bar-inner" style="width:${progress}%">${progress}%</div>`;
+            document.querySelector(".quiz-section").appendChild(progressBar);
+        }
+
+        // Back to Courses
+        function backToCourses() {
+            document.getElementById("quizSection").style.display = "none";
+            document.getElementById("courses").style.display = "block";
+            displayCourses();
+        }
+
+        // Initialize the Application
+        displayCourses();
+    </script>
+
+</body>
+</html>

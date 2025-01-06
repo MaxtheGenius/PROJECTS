@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Story Platform</title>
+    <style>
+        /* General Styles */
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+
+        .story-container {
+            width: 60%;
+            margin: auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 2.5em;
+        }
+
+        .story-content {
+            margin-top: 20px;
+            font-size: 1.2em;
+            line-height: 1.6;
+        }
+
+        .choices {
+            margin-top: 30px;
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .choices li {
+            margin: 10px 0;
+        }
+
+        .choice-btn {
+            padding: 10px;
+            background-color: #008CBA;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            width: 100%;
+        }
+
+        .choice-btn:hover {
+            background-color: #005f6b;
+        }
+
+        .image, .audio, .video {
+            width: 100%;
+            margin-top: 20px;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="story-container">
+        <h1>Interactive Story Platform</h1>
+        <div class="story-content" id="storyContent">
+            <!-- Story content will go here -->
+        </div>
+        <ul class="choices" id="choices">
+            <!-- Choices will be populated here -->
+        </ul>
+    </div>
+
+    <script>
+        // Sample Random Stories and Choices Data
+        const stories = [
+            {
+                title: "The Enchanted Forest",
+                content: "You find yourself standing at the edge of a dense, mysterious forest. The air is thick with magic, and you can feel a sense of both adventure and danger. Do you venture inside?",
+                media: "",
+                choices: [
+                    { text: "Enter the forest", next: 1 },
+                    { text: "Walk away", next: 2 }
+                ]
+            },
+            {
+                title: "The Magic Potion",
+                content: "As you step deeper into the forest, you stumble upon a hidden clearing. In the center, there's a glowing vial of liquid. It's a magic potion. Do you drink it?",
+                media: "<img class='image' src='https://source.unsplash.com/random/500x300?potion' alt='Magic Potion'>",
+                choices: [
+                    { text: "Drink the potion", next: 3 },
+                    { text: "Leave the potion", next: 4 }
+                ]
+            },
+            {
+                title: "A Dead End",
+                content: "You turn around and walk away from the forest, but you can't shake the feeling that you missed something important. Your adventure ends here for now.",
+                media: "<img class='image' src='https://source.unsplash.com/random/500x300?forest' alt='Forest'>",
+                choices: [
+                    { text: "Go back", next: 0 }
+                ]
+            },
+            {
+                title: "Transformation",
+                content: "As soon as you drink the potion, you feel a surge of power. Your body begins to change, and you are transformed into a magical creature. You gain new abilities and continue your journey through the forest.",
+                media: "<img class='image' src='https://source.unsplash.com/random/500x300?creature' alt='Transformed Creature'>",
+                choices: [
+                    { text: "Explore your new powers", next: 5 },
+                    { text: "Leave the forest", next: 6 }
+                ]
+            },
+            {
+                title: "Lost in the Woods",
+                content: "You decide to leave the potion behind. Unfortunately, you wander deeper into the forest, and now you are lost. The journey ends here.",
+                media: "<img class='image' src='https://source.unsplash.com/random/500x300?lost' alt='Lost in Forest'>",
+                choices: [
+                    { text: "Try to find the exit", next: 0 }
+                ]
+            },
+            {
+                title: "The Hero's Journey",
+                content: "Now a powerful creature, you venture further into the forest. Eventually, you find an ancient artifact that grants you the ability to control the elements. You are now a hero in your own right.",
+                media: "<img class='image' src='https://source.unsplash.com/random/500x300?artifact' alt='Ancient Artifact'>",
+                choices: [
+                    { text: "Celebrate your victory", next: 7 },
+                    { text: "Return to the village", next: 8 }
+                ]
+            },
+            {
+                title: "The Quiet Life",
+                content: "You decide to leave the forest and return to the village, where you live a quiet, peaceful life. Your adventure ends here, but the memories of your journey remain with you.",
+                media: "<img class='image' src='https://source.unsplash.com/random/500x300?village' alt='Village'>",
+                choices: []
+            },
+            {
+                title: "The End of the Journey",
+                content: "After exploring the forest and embracing your new abilities, you return to the village as a hero. You live out the rest of your days in peace, knowing you’ve changed the world.",
+                media: "<img class='image' src='https://source.unsplash.com/random/500x300?hero' alt='Hero'>",
+                choices: []
+            }
+        ];
+
+        // Current Story Index
+        let currentStoryIndex = 0;
+
+        // Function to Display Story
+        function displayStory() {
+            const story = stories[currentStoryIndex];
+            const storyContent = document.getElementById("storyContent");
+            const choicesContainer = document.getElementById("choices");
+
+            // Clear existing content
+            storyContent.innerHTML = `
+                <h2>${story.title}</h2>
+                <p>${story.content}</p>
+                ${story.media || ""}
+            `;
+            choicesContainer.innerHTML = "";
+
+            // Display Choices
+            story.choices.forEach(choice => {
+                const choiceButton = document.createElement("button");
+                choiceButton.className = "choice-btn";
+                choiceButton.textContent = choice.text;
+                choiceButton.onclick = function() {
+                    currentStoryIndex = choice.next;
+                    displayStory();
+                };
+                const choiceListItem = document.createElement("li");
+                choiceListItem.appendChild(choiceButton);
+                choicesContainer.appendChild(choiceListItem);
+            });
+        }
+
+        // Initialize Story
+        displayStory();
+    </script>
+</body>
+</html>

@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive CSS Variables Playground</title>
+    <style>
+        /* Global Styles */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f4f4f4;
+        }
+
+        .container {
+            width: 80%;
+            max-width: 1200px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 2em;
+            margin: 20px 0;
+        }
+
+        .variables-container {
+            width: 100%;
+            margin-bottom: 20px;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .variable {
+            margin-bottom: 10px;
+        }
+
+        .variable label {
+            font-weight: bold;
+        }
+
+        .variable input {
+            margin-top: 5px;
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .variable input[type="color"] {
+            width: 50px;
+            height: 50px;
+            padding: 0;
+            border-radius: 50%;
+        }
+
+        .playground {
+            width: 100%;
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .playground div {
+            width: 250px;
+            height: 250px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 10px;
+            color: #fff;
+            font-size: 1.5em;
+            font-weight: bold;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .randomize-btn {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .randomize-btn:hover {
+            background-color: #45a049;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Interactive CSS Variables Playground</h1>
+        <div class="variables-container">
+            <!-- Variable Input Fields -->
+            <div class="variable">
+                <label for="bgColor">Background Color:</label>
+                <input type="color" id="bgColor" value="#4CAF50">
+            </div>
+            <div class="variable">
+                <label for="textColor">Text Color:</label>
+                <input type="color" id="textColor" value="#ffffff">
+            </div>
+            <div class="variable">
+                <label for="size">Font Size (px):</label>
+                <input type="range" id="size" min="10" max="50" value="20">
+            </div>
+            <div class="variable">
+                <label for="padding">Padding (px):</label>
+                <input type="range" id="padding" min="10" max="100" value="20">
+            </div>
+            <div class="variable">
+                <label for="borderRadius">Border Radius (px):</label>
+                <input type="range" id="borderRadius" min="0" max="50" value="10">
+            </div>
+            <button class="randomize-btn" onclick="randomizeVariables()">Generate Random Values</button>
+        </div>
+
+        <!-- Playground for real-time feedback -->
+        <div class="playground">
+            <div id="box1" style="background-color: var(--bgColor); color: var(--textColor); font-size: var(--fontSize); padding: var(--padding); border-radius: var(--borderRadius);">
+                Box 1
+            </div>
+            <div id="box2" style="background-color: var(--bgColor); color: var(--textColor); font-size: var(--fontSize); padding: var(--padding); border-radius: var(--borderRadius);">
+                Box 2
+            </div>
+            <div id="box3" style="background-color: var(--bgColor); color: var(--textColor); font-size: var(--fontSize); padding: var(--padding); border-radius: var(--borderRadius);">
+                Box 3
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Function to update the CSS variables in real-time
+        function updateVariables() {
+            const bgColor = document.getElementById('bgColor').value;
+            const textColor = document.getElementById('textColor').value;
+            const fontSize = document.getElementById('size').value + 'px';
+            const padding = document.getElementById('padding').value + 'px';
+            const borderRadius = document.getElementById('borderRadius').value + 'px';
+
+            document.documentElement.style.setProperty('--bgColor', bgColor);
+            document.documentElement.style.setProperty('--textColor', textColor);
+            document.documentElement.style.setProperty('--fontSize', fontSize);
+            document.documentElement.style.setProperty('--padding', padding);
+            document.documentElement.style.setProperty('--borderRadius', borderRadius);
+        }
+
+        // Event listeners for input elements
+        document.getElementById('bgColor').addEventListener('input', updateVariables);
+        document.getElementById('textColor').addEventListener('input', updateVariables);
+        document.getElementById('size').addEventListener('input', updateVariables);
+        document.getElementById('padding').addEventListener('input', updateVariables);
+        document.getElementById('borderRadius').addEventListener('input', updateVariables);
+
+        // Function to generate random values for all variables
+        function randomizeVariables() {
+            const randomColor = () => '#' + Math.floor(Math.random()*16777215).toString(16);
+            const randomSize = Math.floor(Math.random() * (50 - 10 + 1)) + 10;
+            const randomPadding = Math.floor(Math.random() * (100 - 10 + 1)) + 10;
+            const randomRadius = Math.floor(Math.random() * (50 - 0 + 1)) + 0;
+
+            document.getElementById('bgColor').value = randomColor();
+            document.getElementById('textColor').value = randomColor();
+            document.getElementById('size').value = randomSize;
+            document.getElementById('padding').value = randomPadding;
+            document.getElementById('borderRadius').value = randomRadius;
+
+            updateVariables();
+        }
+
+        // Initialize with default values
+        updateVariables();
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Accessible CSS Framework Demo</title>
+    <style>
+        /* Global Styles */
+        :root {
+            --primary-color: #4CAF50;
+            --secondary-color: #ffffff;
+            --text-color: #333;
+            --background-color: #f4f4f4;
+            --focus-color: #ffbf47;
+            --text-size: 1rem; /* Default text size */
+        }
+
+        /* Accessibility and Customizability */
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+            line-height: 1.5;
+            font-size: var(--text-size);
+        }
+
+        a {
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+
+        a:focus,
+        button:focus {
+            outline: 3px solid var(--focus-color);
+        }
+
+        /* High Contrast Mode */
+        @media (prefers-contrast: high) {
+            body {
+                background-color: black;
+                color: white;
+            }
+
+            a {
+                color: yellow;
+            }
+
+            button {
+                background-color: yellow;
+                color: black;
+            }
+        }
+
+        /* Focus Indicators */
+        :focus-visible {
+            outline: 2px dashed var(--focus-color);
+        }
+
+        button, input, select, textarea {
+            font-size: 1rem;
+            line-height: 1.5;
+            padding: 10px;
+            border: 1px solid var(--primary-color);
+            border-radius: 4px;
+            background-color: var(--secondary-color);
+        }
+
+        /* Text Sizing Options */
+        html {
+            font-size: 100%; /* Allow browser zoom */
+        }
+
+        @media (max-width: 768px) {
+            html {
+                font-size: 90%; /* Slightly smaller text for mobile */
+            }
+        }
+
+        /* Customizable Elements */
+        button {
+            background-color: var(--primary-color);
+            color: var(--secondary-color);
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: darkgreen;
+        }
+
+        /* Layout Styles */
+        .container {
+            width: 90%;
+            margin: 0 auto;
+            max-width: 1200px;
+        }
+
+        header {
+            background-color: var(--primary-color);
+            color: var(--secondary-color);
+            padding: 20px;
+            text-align: center;
+        }
+
+        footer {
+            background-color: var(--primary-color);
+            color: var(--secondary-color);
+            padding: 10px;
+            text-align: center;
+        }
+
+        main {
+            padding: 20px;
+        }
+
+        /* Cards for Displaying Random Content */
+        .card {
+            background-color: var(--secondary-color);
+            border: 1px solid var(--primary-color);
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+        }
+
+        .card h3 {
+            font-size: 1.25rem;
+            color: var(--primary-color);
+        }
+
+        .card p {
+            font-size: 1rem;
+            color: var(--text-color);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Accessible Web Framework</h1>
+        <p>Welcome to the demo site! This framework ensures high accessibility standards for all users.</p>
+    </header>
+
+    <main class="container">
+        <section>
+            <h2>Featured Content</h2>
+            <div class="card">
+                <h3>Random Article 1</h3>
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur sit amet eros sit amet arcu consectetur posuere.</p>
+            </div>
+            <div class="card">
+                <h3>Random Article 2</h3>
+                <p>Curabitur euismod dui eget arcu cursus, vel hendrerit justo aliquam. Ut ultricies lectus in sollicitudin tincidunt.</p>
+            </div>
+            <div class="card">
+                <h3>Random Article 3</h3>
+                <p>Vivamus ac gravida dui, sit amet tincidunt felis. Nam faucibus ante sit amet facilisis elementum. Suspendisse potenti.</p>
+            </div>
+        </section>
+
+        <section>
+            <h2>Interactive Elements</h2>
+            <button onclick="alert('Button clicked!')">Click Me</button>
+            <form>
+                <label for="name">Name:</label>
+                <input type="text" id="name" placeholder="Enter your name">
+            </form>
+        </section>
+    </main>
+
+    <footer>
+        <p>Accessible Web Framework - All rights reserved.</p>
+    </footer>
+
+    <script>
+        // Function to generate random content for testing purposes
+        function generateRandomContent() {
+            const titles = ['Lorem ipsum', 'Curabitur euismod', 'Vivamus ac gravida', 'Nam faucibus', 'Suspendisse potenti'];
+            const paragraphs = [
+                'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+                'Curabitur euismod dui eget arcu cursus, vel hendrerit justo aliquam.',
+                'Vivamus ac gravida dui, sit amet tincidunt felis.',
+                'Nam faucibus ante sit amet facilisis elementum.',
+                'Suspendisse potenti. Aenean euismod nibh vel volutpat.'
+            ];
+
+            const cardElements = document.querySelectorAll('.card');
+            cardElements.forEach((card, index) => {
+                const title = titles[Math.floor(Math.random() * titles.length)];
+                const paragraph = paragraphs[Math.floor(Math.random() * paragraphs.length)];
+                card.querySelector('h3').textContent = title;
+                card.querySelector('p').textContent = paragraph;
+            });
+        }
+
+        // Generate random content on load
+        window.onload = generateRandomContent;
+    </script>
+</body>
+</html>

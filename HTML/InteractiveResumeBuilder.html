@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Resume Builder</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        .toolbar {
+            margin: 20px;
+        }
+        .toolbar button {
+            margin: 0 5px;
+            padding: 10px 15px;
+            border: none;
+            background: #007bff;
+            color: #fff;
+            cursor: pointer;
+        }
+        .toolbar button:hover {
+            background: #0056b3;
+        }
+        .resume-builder {
+            display: flex;
+            gap: 20px;
+        }
+        .sections {
+            width: 30%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            background: #f9f9f9;
+        }
+        .sections h3 {
+            margin-top: 0;
+        }
+        .sections div {
+            padding: 10px;
+            margin: 5px 0;
+            background: #e9ecef;
+            border: 1px solid #ccc;
+            cursor: grab;
+        }
+        .preview {
+            flex-grow: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            background: #fff;
+            overflow: auto;
+            height: 400px;
+        }
+        .resume {
+            border: 1px solid #333;
+            padding: 20px;
+            background: #fff;
+        }
+        .theme-light .resume {
+            background: #fff;
+            color: #000;
+        }
+        .theme-dark .resume {
+            background: #333;
+            color: #fff;
+        }
+        .theme-modern .resume {
+            background: #f0f0f0;
+            color: #333;
+            font-family: 'Courier New', Courier, monospace;
+        }
+    </style>
+</head>
+<body>
+    <!-- Toolbar for Themes -->
+    <div class="toolbar">
+        <button onclick="applyTheme('light')">Light Theme</button>
+        <button onclick="applyTheme('dark')">Dark Theme</button>
+        <button onclick="applyTheme('modern')">Modern Theme</button>
+    </div>
+
+    <!-- Resume Builder UI -->
+    <div class="resume-builder">
+        <!-- Available Sections -->
+        <div class="sections">
+            <h3>Sections</h3>
+            <div draggable="true" ondragstart="drag(event)" data-section="profile">Profile</div>
+            <div draggable="true" ondragstart="drag(event)" data-section="experience">Work Experience</div>
+            <div draggable="true" ondragstart="drag(event)" data-section="education">Education</div>
+            <div draggable="true" ondragstart="drag(event)" data-section="skills">Skills</div>
+        </div>
+
+        <!-- Resume Preview -->
+        <div class="preview theme-light" ondragover="allowDrop(event)" ondrop="drop(event)">
+            <div class="resume">
+                <h2>Your Resume</h2>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Sample data for sections
+        const sampleData = {
+            profile: `<h3>John Doe</h3><p>Software Engineer with 5 years of experience.</p>`,
+            experience: `<h3>Work Experience</h3><ul><li>Software Developer at TechCorp (2018-2021)</li><li>Senior Engineer at InnovateX (2021-present)</li></ul>`,
+            education: `<h3>Education</h3><ul><li>Bachelor of Computer Science - ABC University (2014-2018)</li></ul>`,
+            skills: `<h3>Skills</h3><ul><li>JavaScript, HTML, CSS</li><li>React, Node.js</li><li>Python, Django</li></ul>`
+        };
+
+        // Drag-and-Drop Logic
+        function allowDrop(event) {
+            event.preventDefault();
+        }
+
+        function drag(event) {
+            event.dataTransfer.setData("section", event.target.dataset.section);
+        }
+
+        function drop(event) {
+            event.preventDefault();
+            const section = event.dataTransfer.getData("section");
+            const sectionContent = sampleData[section];
+            const resume = document.querySelector(".resume");
+            resume.innerHTML += `<div>${sectionContent}</div>`;
+        }
+
+        // Theme Application
+        function applyTheme(theme) {
+            const preview = document.querySelector(".preview");
+            preview.className = `preview theme-${theme}`;
+        }
+    </script>
+</body>
+</html>
